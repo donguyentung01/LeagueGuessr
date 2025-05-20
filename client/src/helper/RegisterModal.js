@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const RegisterModal = ({ isRegisterOpen, onClose, setIsAuthenticated }) => {
   const modalRef = useRef(null);
   const [errorMessage, setErrorMessage] = useState(""); // State to store error message
@@ -20,7 +22,7 @@ const RegisterModal = ({ isRegisterOpen, onClose, setIsAuthenticated }) => {
     const reentered_password = e.target.reentered_password.value;
 
     try {
-      const registerResponse = await fetch("https://api.aramguess.com/register", {
+      const registerResponse = await fetch(`${apiUrl}/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -46,7 +48,7 @@ const RegisterModal = ({ isRegisterOpen, onClose, setIsAuthenticated }) => {
       loginParams.append("username", username);
       loginParams.append("password", password);
 
-      const loginResponse = await fetch("https://api.aramguess.com/token", {
+      const loginResponse = await fetch(`${apiUrl}/token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"

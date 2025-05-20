@@ -22,7 +22,7 @@ app = FastAPI()
 
 # CORS cross-origin policy
 origins = [
-    "https://aramguess.com",   
+    os.getenv("ORIGIN")
 ]
 
 app.add_middleware(

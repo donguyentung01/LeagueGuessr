@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const LoginModal = ({ isLoginOpen, onClose, setIsAuthenticated, onOpenRegister }) => {
   const modalRef = useRef(null);
@@ -23,7 +24,7 @@ const LoginModal = ({ isLoginOpen, onClose, setIsAuthenticated, onOpenRegister }
     params.append("password", password);
 
     try {
-      const response = await fetch("https://api.aramguess.com/token", {
+      const response = await fetch(`${apiUrl}/token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"

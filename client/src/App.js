@@ -11,6 +11,8 @@ import UserProfile from './helper/UserProfile';
 import GuessTracker from './helper/GuessTracker';
 import Leaderboard from './helper/Leaderboard';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 async function fetchRuneIcons(patch) {
   const runesURL = `https://ddragon.leagueoflegends.com/cdn/${patch}.1/data/en_US/runesReforged.json`;
   const iconBaseURL = "https://ddragon.leagueoflegends.com/cdn/img/";
@@ -62,13 +64,13 @@ function App() {
   const [runeIconDict, setRuneIconDict] = useState(null)
 
   const fetchNewQuestion = () => {
-    fetch('https://api.aramguess.com/game/random')  // Replace with your API URL
+    fetch(`${apiUrl}/game/random`)  // Replace with your API URL
       .then(response => response.json())
       .then(result => {
         // set game data
         // Fetch hidden players for the game
         const currentGameId = result.game_id
-        fetch(`https://api.aramguess.com/game/${currentGameId}/hidden_players`)  // Replace with your API URL
+        fetch(`${apiUrl}/game/${currentGameId}/hidden_players`)  // Replace with your API URL
           .then(playerResponse => playerResponse.json())
           .then(playersResult => {
             setHiddenPlayers(playersResult); // Set hidden players state
@@ -116,7 +118,7 @@ function App() {
 
       const fetchGamePlayers = async () => {
         try {
-          const response = await fetch(`https://api.aramguess.com/game/${hiddenGame.game_id}/players`);  
+          const response = await fetch(`${apiUrl}/game/${hiddenGame.game_id}/players`);  
           const data = await response.json();
           setGamePlayers([])
           setGamePlayers(data);
@@ -135,7 +137,7 @@ function App() {
         const token = localStorage.getItem("access_token");
 
         try {
-          const response = await fetch("https://api.aramguess.com/users/me", {
+          const response = await fetch(`${apiUrl}/users/me`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -164,7 +166,7 @@ function App() {
     const fetchLeaderboard = async () => {
       if (isLeaderboardOpen) {
         try {
-          const response = await fetch("https://api.aramguess.com/leaderboard?limit=50", {
+          const response = await fetch(`${apiUrl}/leaderboard?limit=50`, {
             method: "GET",
           });
 
@@ -191,7 +193,7 @@ function App() {
   
       const accessToken = localStorage.getItem("access_token");
 
-      fetch("https://api.aramguess.com/set_record_score", {
+      fetch(`${apiUrl}/set_record_score`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -232,7 +234,7 @@ function App() {
 
   const submitPrediction = async (predict) => {
     try {
-      const response = await fetch('https://api.aramguess.com/prediction', {
+      const response = await fetch(`${apiUrl}/prediction`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
