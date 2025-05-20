@@ -254,6 +254,25 @@ function App() {
 
   const submitPrediction = async (predict) => {
     try {
+      // Step 1: Get or create anon_user_id
+      let anonUserId = localStorage.getItem("anon_user_id");
+  
+      if (!anonUserId) {
+        const createResponse = await fetch(`${apiUrl}/anon_user/create`, {
+          method: 'POST',
+        });
+  
+        if (!createResponse.ok) {
+          console.error("Failed to create anon_user");
+          return;
+        }
+  
+        const createData = await createResponse.json();
+        anonUserId = createData["anon_user_id"];
+        localStorage.setItem("anon_user_id", anonUserId);
+      }
+  
+      // Step 2: Submit prediction
       const response = await fetch(`${apiUrl}/prediction`, {
         method: 'POST',
         headers: {
@@ -264,20 +283,33 @@ function App() {
           prediction: predict,
         }),
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         console.log('Prediction submitted successfully:', result);
-        setIsCorrect(result["successful_guess"])
-
-        if (!result["successful_guess"]) {
-          setGuessesLeft(guessesLeft-1); 
+        const isCorrect = result["successful_guess"];
+        setIsCorrect(isCorrect);
+  
+        if (!isCorrect) {
+          setGuessesLeft(guessesLeft - 1);
+        } else {
+          setTotalScore(totalScore + 1);
         }
-        else { 
-          setTotalScore(totalScore+1); 
-        }
-
+  
         setPrediction(predict);
+  
+        // Step 3: Update anon_user score
+        await fetch(`${apiUrl}/anon_users/update_score`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            anon_user_id: anonUserId,
+            correct: isCorrect,
+          }),
+        });
+  
       } else {
         console.error('Prediction submission failed:', response.statusText);
       }
@@ -285,6 +317,7 @@ function App() {
       console.error('Error making prediction:', error);
     }
   };
+  
 
   return (
     <div>

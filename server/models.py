@@ -160,6 +160,11 @@ class AnonUserOut(BaseModel):
     class Config:
         from_attributes=True
 
+class UpdateScoreRequest(BaseModel):
+    anon_user_id: str
+    correct: bool
+
+
 def convertUsertoUserOut(user: User) -> UserOut: 
     user_out = UserOut(
         username = user.username, 

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, Header, Body, Query
 from sqlalchemy import func, update, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import SessionLocal, engine
-from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, GamePlayer, AnonUser, AnonUserOut
+from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, GamePlayer, AnonUser, AnonUserOut, UpdateScoreRequest
 from models import convertUsertoUserOut, convertGameDataToGameDataOut, convertGameDataToHiddenGameDataOut, convertGamePlayerToGamePlayerOut, convertGamePlayerToHiddenGamePlayerOut, convertAnonUserToAnonUserOut
 from models import RecordScore, RecordOut
 from sqlalchemy.future import select
@@ -315,3 +315,20 @@ async def get_anon_user(
     if not anon_user:
         raise HTTPException(status_code=404, detail="AnonUser not found")
     return convertAnonUserToAnonUserOut(anon_user)
+
+@app.post("/anon_users/update_score")
+async def update_anon_user_score(
+    data: UpdateScoreRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = (
+        update(AnonUser)
+        .where(AnonUser.id == data.anon_user_id)
+        .values(
+            guesses=AnonUser.guesses + 1,
+            correct_guesses=AnonUser.correct_guesses + (1 if data.correct else 0)
+        )
+    )
+    await db.execute(stmt)
+    await db.commit()
+    return {"status": "success"}
