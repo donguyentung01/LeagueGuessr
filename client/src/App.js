@@ -107,6 +107,26 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const anonUserId = localStorage.getItem('anon_user_id');
+    if (!anonUserId) {
+      // Create anon user
+      fetch(`${apiUrl}/anon_users/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})  // whatever your API expects
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.id) {
+          localStorage.setItem('anon_user_id', data.id);
+          console.log('Created anon user with id:', data.id);
+        }
+      })
+      .catch(console.error);
+    }
+  }, []);  // Run once on mount
+
 
   useEffect(() => {
     if (prediction === -1) {
