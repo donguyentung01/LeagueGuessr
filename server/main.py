@@ -2,8 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException, status, Header, Body, Query
 from sqlalchemy import func, update, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import SessionLocal, engine
-from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, GamePlayer
-from models import convertUsertoUserOut, convertGameDataToGameDataOut, convertGameDataToHiddenGameDataOut, convertGamePlayerToGamePlayerOut, convertGamePlayerToHiddenGamePlayerOut
+from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, GamePlayer, AnonUser, AnonUserOut
+from models import convertUsertoUserOut, convertGameDataToGameDataOut, convertGameDataToHiddenGameDataOut, convertGamePlayerToGamePlayerOut, convertGamePlayerToHiddenGamePlayerOut, convertAnonUserToAnonUserOut
 from models import RecordScore, RecordOut
 from sqlalchemy.future import select
 from typing import Annotated, Optional, List
@@ -15,6 +15,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+from uuid import uuid4
 
 load_dotenv() 
 
@@ -286,3 +287,31 @@ async def get_players_for_game(game_id: str, db: AsyncSession = Depends(get_db))
     game_players_out = [convertGamePlayerToGamePlayerOut(player) for player in game_players]
     
     return game_players_out
+
+@app.post("/anon_users/create", response_model=AnonUserOut)
+async def create_anon_user(db: AsyncSession = Depends(get_db)) -> AnonUserOut:
+    # Keep generating a new UUID until there's no collision (extremely rare)
+    while True:
+        random_id = str(uuid4())
+        result = await db.execute(select(AnonUser).where(AnonUser.id == random_id))
+        if result.scalar_one_or_none() is None:
+            break  # No collision, use this ID
+
+    # Create the AnonUser
+    new_user = AnonUser(id=random_id)
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+
+    return convertAnonUserToAnonUserOut(new_user)
+
+@app.get("/anon_users/{anon_user_id}", response_model=AnonUserOut)
+async def get_anon_user(
+    anon_user_id: str, 
+    db: AsyncSession = Depends(get_db)
+) -> AnonUserOut:
+    result = await db.execute(select(AnonUser).filter(AnonUser.id == anon_user_id))
+    anon_user = result.scalars().first()
+    if not anon_user:
+        raise HTTPException(status_code=404, detail="AnonUser not found")
+    return convertAnonUserToAnonUserOut(anon_user)

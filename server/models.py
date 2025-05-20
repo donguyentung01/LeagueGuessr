@@ -145,6 +145,21 @@ class RecordOut(BaseModel):
     new_record: bool
     current_record: int
 
+class AnonUser(Base):
+    __tablename__ = 'anon_users'
+
+    id = Column(String(255), primary_key=True, index=True)      
+    guesses = Column(Integer, nullable=True, default=0)        
+    correct_guesses = Column(Integer, nullable=True, default=0)       
+
+class AnonUserOut(BaseModel):
+    id: str
+    guesses: int
+    correct_guesses: int
+
+    class Config:
+        from_attributes=True
+
 def convertUsertoUserOut(user: User) -> UserOut: 
     user_out = UserOut(
         username = user.username, 
@@ -180,6 +195,8 @@ def convertGamePlayerToHiddenGamePlayerOut(game_player: GamePlayer) -> HiddenGam
         secondary_rune=game_player.secondary_rune
     )
 
+def convertAnonUserToAnonUserOut(anon_user: AnonUser) -> AnonUserOut:
+    return AnonUserOut.from_orm(anon_user)
 
 
 
