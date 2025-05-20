@@ -1,0 +1,5 @@
+venv/
+client/node_modules/
+client/build
+scraper/
+server/.env

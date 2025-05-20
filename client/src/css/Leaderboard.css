@@ -1,0 +1,39 @@
+.leaderboard-dialog {
+    text-align: center;
+    vertical-align: middle;
+}
+
+table .leaderboard {
+    text-align: center;
+    vertical-align: middle;
+    width: 100%; /* Optional: Ensure table takes up full width */
+    border-spacing: 15px; /* Adds space between cells */
+}
+
+.leaderboard th,.leaderboard td {
+    padding: 5px 20px; /* Adds padding inside cells */
+}
+
+.leaderboard th {
+    text-align: center;
+}
+
+.leaderboard tr {
+    border-bottom: 2px solid #ccc; /* Optional: Adds a subtle border between rows */
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+table .star {
+    animation: flicker 0.5s infinite;
+}
+
+@media (max-width: 500px) {
+    .leaderboard-dialog  {
+        font-size: 0.5rem;
+        border-spacing: 5px;
+    }
+}

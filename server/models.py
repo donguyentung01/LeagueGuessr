@@ -1,0 +1,186 @@
+from sqlalchemy import Column, Integer, String, BigInteger, Boolean
+from database import Base
+from pydantic import BaseModel
+from typing import Optional
+
+class GameData(Base):
+    __tablename__ = 'game'
+
+    game_id = Column(String(255), primary_key=True, index=True) 
+    game_start_time = Column(BigInteger, nullable=True)        
+    game_length_seconds = Column(Integer, nullable=True)        
+    game_patch = Column(String(20), nullable=True)      
+    blue_wins = Column(Boolean, nullable=True)    
+
+class GameDataOut(BaseModel):
+    game_id: str
+    game_start_time: Optional[int] = None
+    game_length_seconds: Optional[int] = None
+    game_patch: Optional[str] = None
+    blue_wins: Optional[bool] = None
+    class Config:
+        from_attributes=True
+
+class GamePlayer(Base):
+    __tablename__ = 'game_players'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    game_id = Column(String(255), nullable=False)
+    player_index = Column(Integer, nullable=False)
+    summoner_name = Column(String(255), nullable=True)
+    champion_name = Column(String(255), nullable=True)
+    team = Column(String(10), nullable=True)
+
+    kills = Column(Integer, nullable=True)
+    deaths = Column(Integer, nullable=True)
+    assists = Column(Integer, nullable=True)
+
+    spell1 = Column(String(50), nullable=True)
+    spell2 = Column(String(50), nullable=True)
+
+    primary_rune = Column(String(100), nullable=True)
+    secondary_rune = Column(String(100), nullable=True)
+
+    item0 = Column(Integer, nullable=True)
+    item1 = Column(Integer, nullable=True)
+    item2 = Column(Integer, nullable=True)
+    item3 = Column(Integer, nullable=True)
+    item4 = Column(Integer, nullable=True)
+    item5 = Column(Integer, nullable=True)
+    item6 = Column(Integer, nullable=True)
+
+    damage_dealt = Column(Integer, nullable=True)
+    damage_taken = Column(Integer, nullable=True)
+
+class GamePlayerOut(BaseModel):
+    id: int
+    game_id: str
+    player_index: int
+    summoner_name: Optional[str] = None
+    champion_name: Optional[str] = None
+    team: Optional[str] = None
+
+    kills: Optional[int] = None
+    deaths: Optional[int] = None
+    assists: Optional[int] = None
+
+    spell1: Optional[str] = None
+    spell2: Optional[str] = None
+
+    primary_rune: Optional[str] = None
+    secondary_rune: Optional[str] = None
+
+    item0: Optional[int] = None
+    item1: Optional[int] = None
+    item2: Optional[int] = None
+    item3: Optional[int] = None
+    item4: Optional[int] = None
+    item5: Optional[int] = None
+    item6: Optional[int] = None
+
+    damage_dealt: Optional[int] = None
+    damage_taken: Optional[int] = None
+
+    class Config:
+        from_attributes=True
+
+class HiddenGamePlayerOut(BaseModel):
+    id: int
+    game_id: str
+    player_index: int
+    champion_name: str
+    team: str
+    spell1: str
+    spell2: str
+    primary_rune: str
+    secondary_rune: str
+
+    class Config:
+        from_attributes=True
+    
+
+class HiddenGameDataOut(BaseModel): 
+    game_id: str
+    game_start_time: Optional[int] = None
+    game_length_seconds: Optional[int] = None
+    game_patch: Optional[str] = None
+    
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    username = Column(String(50), unique=True, nullable=False, index=True)
+    password = Column(String(255), nullable=False)
+    record_score = Column(Integer, default=0)
+
+class Prediction(BaseModel):
+    gameId: str
+    prediction: bool
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+    reentered_password: str
+
+class UserOut(BaseModel):
+    username: str
+    record_score: int = 0 
+
+class PredictionOut(BaseModel): 
+    successful_guess: bool 
+    game_data_out: GameDataOut
+
+class RecordScore(BaseModel):
+    current_score: int
+
+class RecordOut(BaseModel):
+    new_record: bool
+    current_record: int
+
+def convertUsertoUserOut(user: User) -> UserOut: 
+    user_out = UserOut(
+        username = user.username, 
+        record_score = user.record_score, 
+    )
+    return user_out
+
+
+def convertGameDataToGameDataOut(game_data: GameData) -> GameDataOut:
+    return GameDataOut.from_orm(game_data)
+
+def convertGameDataToHiddenGameDataOut(game_data: GameData) -> HiddenGameDataOut:
+    return HiddenGameDataOut(
+        game_id=game_data.game_id,
+        game_start_time=game_data.game_start_time,
+        game_length_seconds=game_data.game_length_seconds,
+        game_patch=game_data.game_patch
+    )
+
+def convertGamePlayerToGamePlayerOut(game_player: GamePlayer) -> GamePlayerOut:
+    return GamePlayerOut.from_orm(game_player)
+
+def convertGamePlayerToHiddenGamePlayerOut(game_player: GamePlayer) -> HiddenGamePlayerOut:
+    return HiddenGamePlayerOut(
+        id=game_player.id,
+        game_id=game_player.game_id,
+        player_index=game_player.player_index,
+        champion_name=game_player.champion_name,
+        team=game_player.team,
+        spell1=game_player.spell1,
+        spell2=game_player.spell2,
+        primary_rune=game_player.primary_rune,
+        secondary_rune=game_player.secondary_rune
+    )
+
+
+
+
+

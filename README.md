@@ -1,4 +1,4 @@
-# LoLWinForecast
-A Machine Learning model to predict League of Legends game's outcome 
+# ARAM GUESS
+aramguess.com, a browser game where players guess the outcome of an ARAM game based on champion select. 
 
 ## Overview

@@ -1,0 +1,215 @@
+.result-table-container {
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+    max-width: 100%;
+  }
+  
+  .result-table {
+    table-layout: auto;
+    width: max-content; 
+    font-size: 0.7rem;
+    min-width: unset;
+    display: block;
+  }
+  
+  
+  .result-table th,
+  .result-table td {
+    white-space: nowrap; /* Prevent wrapping in cells */
+    padding: 0.3rem 0.5rem;
+    text-align: center;
+    max-width: none !important; /* Remove any max-width limits */
+  }
+  
+  .result-champion-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  .result-champion-img {
+    width: 32px;
+    height: 32px;
+    margin-right: 4px;
+  }
+  
+  .result-rune-column {
+    display: flex;
+    flex-direction: column;
+    margin-right: 2px;
+  }
+  
+  .result-spell-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .result-summoner-name-column {
+    margin-left: 2%;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7rem;
+  }
+  
+  .kda-text {
+    font-size: 0.7rem;
+    margin-left: 2%;
+  }
+  .result-rune-img,
+  .result-spell-img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .result-item-img {
+    width: 24px;
+    height: 24px;
+    margin-right: 2px;
+  }
+  
+  .result-item-placeholder {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    margin-right: 2px;
+  }
+  
+  /* Set fixed widths, no max-width to prevent shrinking */
+  .result-table th:nth-child(3),
+  .result-table td:nth-child(3) {
+    width: 200px;
+    max-width: none !important;
+  }
+  
+  .result-table th:nth-child(4),
+  .result-table th:nth-child(5),
+  .result-table td:nth-child(4),
+  .result-table td:nth-child(5) {
+    width: 180px;
+    max-width: none !important;
+  }
+  
+  .result-table th:nth-child(1),
+  .result-table th:nth-child(2),
+  .result-table td:nth-child(1),
+  .result-table td:nth-child(2) {
+    width: 150px;
+    max-width: none !important;
+  }
+  
+  .blue-team-row {
+    background-color: #1c2a52; /* Dark Blue */
+    color: white;
+  }
+  
+  .red-team-row {
+    background-color: #4a1a1a; /* Dark Red */
+    color: white;
+  }
+  
+  .team-separator-row td {
+    padding: 8px 0;
+    background-color: transparent;
+  }
+  
+  /* Reduce bar height */
+  .nes-progress {
+    height: 11px !important; /* Reduced from default 20px */
+  }
+  
+  /* Better spacing and vertical alignment */
+  .progress-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  .progress-value {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .dialog-menu {
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+    height: 100%;            /* make sure parent container has a height */
+  }
+  
+  /* Optional: smaller font-size on smaller screens */
+  @media (max-width: 600px) {
+    .result-table {
+        font-size: 0.5rem;
+    }
+    .result-summoner-name-column {
+        font-size:0.4rem;
+    }
+    .result-table th,
+    .result-table td {
+        white-space: nowrap; /* Prevent wrapping in cells */
+        padding: 0.1rem 0.2rem;
+        text-align: center;
+        max-width: none !important; /* Remove any max-width limits */
+    }
+      /* Set fixed widths, no max-width to prevent shrinking */
+    .result-table th:nth-child(3),
+    .result-table td:nth-child(3) {
+        width: 85px;
+        max-width: none !important;
+    }
+  
+    .result-table th:nth-child(4),
+    .result-table th:nth-child(5),
+    .result-table td:nth-child(4),
+    .result-table td:nth-child(5) {
+        width: 75px;
+        max-width: none !important;
+    }
+    .result-table th:nth-child(1) {
+        width: 120px;
+        max-width: none !important;
+    }
+    .result-table th:nth-child(2),
+    .result-table td:nth-child(1),
+    .result-table td:nth-child(2) {
+        width: 60px;
+        max-width: none !important;
+    }  
+    .result-champion-img {
+        width: 25px;
+        height: 25px;
+        margin-right: 4px;
+    }
+    .result-rune-img,
+    .result-spell-img {
+        width: 15px;
+        height: 15px;
+    }
+  
+    .result-item-img {
+        width: 15px;
+        height: 15px;
+        margin-right: 2px;
+    }
+    .nes-text {
+        font-size: 0.7rem;
+        padding: 0rem; 
+        margin: 0.1rem;
+    }
+    .dialog-menu {
+        font-size: 0.7rem;
+    }
+    .progress-value {
+        font-size: 0.4rem;
+        font-weight: bold;
+        color: white;
+    }
+    .kda-text {
+        font-size: 0.4rem;
+        margin-left: 2%;
+    }
+}
+  

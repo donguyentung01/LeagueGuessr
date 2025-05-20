@@ -1,0 +1,158 @@
+.champion-container {
+  width: 4rem;
+  height: 4rem;
+  max-width: 40vw;
+  max-height: 40vw;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.rune-container,
+.spell-container {
+  width: 2rem;
+  height: 2rem;
+  max-width: 10vw;
+  max-height: 10vw;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Blue and Red borders */
+.draft td:first-child .champion-container {
+  border: 2px solid #0075FF;
+}
+
+.draft td:last-child .champion-container {
+  border: 2px solid #FF2D2D;
+}
+
+/* Image filter */
+.nes-filter {
+  filter: contrast(150%) saturate(80%) brightness(90%);
+  image-rendering: pixelated;
+}
+
+/* Table layout */
+.draft {
+  text-align: center;
+  vertical-align: middle;
+  table-layout: fixed;
+  width:60%;
+  padding: 1rem 0;
+  border-collapse: collapse;
+}
+
+.draft th,
+.draft td {
+  padding: 0.5rem;
+}
+
+.draft th {
+  text-align: center;
+}
+
+/* VS text animation */
+.vs-text {
+  font-size: 1.5rem;
+  animation: vs-flicker 1s infinite alternate;
+  display: inline-block;
+}
+
+@keyframes vs-flicker {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* Blue and Red columns */
+.draft td:first-child {
+  background-color: #61b7f3;
+  color: white;
+}
+
+.draft td:last-child {
+  background-color: #ff6b81;
+  color: white;
+}
+
+/* Rounded corners */
+.draft tr:first-child td:first-child {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.draft tr:first-child td:last-child {
+  border-top-right-radius: 1rem;
+  border-top-left-radius: 1rem;
+}
+
+.draft tr:last-child td:first-child {
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.draft tr:last-child td:last-child {
+  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.draft td.middle {
+  border-radius: 0;
+}
+
+/* Game info */
+.game-patch {
+  background-color: #ced4da !important;
+}
+
+.game-length-emoji,
+.game-patch-emoji {
+  font-size: 2rem;
+}
+
+/* Responsive media query */
+@media (max-width: 768px) {
+  .champion-container,
+  .rune-container,
+  .spell-container {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .vs-text {
+    font-size: 1.2rem;
+  }
+
+  .game-length-emoji,
+  .game-patch-emoji {
+    font-size: 1.5rem;
+  }
+
+  .draft th,
+  .draft td {
+    padding: 0.3rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .spell-container,
+  .rune-container {
+    width: 1rem;
+    height: 1rem;
+  }
+  .draft {
+    text-align: center;
+    vertical-align: middle;
+    table-layout: fixed;
+    width:100%;
+    padding: 1rem 0;
+    border-collapse: collapse;
+  }
+
+}
+
