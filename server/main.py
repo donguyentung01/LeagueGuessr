@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
 from uuid import uuid4
+from profanity import profanity
 
 load_dotenv() 
 
@@ -97,6 +98,11 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 @app.post("/register", response_model = UserOut) 
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)) -> UserOut:
+    if profanity.contains_profanity(user.username):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Inappropriate username",
+        )
     result = await db.execute(select(User).where(User.username == user.username))
     existing_user = result.scalar_one_or_none()
     if existing_user:
