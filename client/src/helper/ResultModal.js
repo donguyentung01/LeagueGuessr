@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import '../css/ResultModal.css';
 
 function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hiddenGame, prediction }) {
   const modalRef = useRef(null);
