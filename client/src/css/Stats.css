@@ -1,6 +1,15 @@
 .stats {
     width: 50%;
 }
+.review {
+    width:200px;
+    height:200px;
+}
+
+.dialog-menu {
+    display: flex;
+    justify-content: center;
+}
 
 @media (max-width: 500px) {
     .stats {
