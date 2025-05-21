@@ -2,7 +2,7 @@ import React from 'react';
 import '../css/fonts.css';
 import '../css/NavBar.css';
 
-function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard }) {
+function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard, openStats }) {
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -15,10 +15,26 @@ function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard }) {
       </div>
 
       <div className="navbar-right">
+        <div className="tooltip" onClick={openStats}>
+            <img
+              src="/images/stats.png"
+              alt="About the game"
+              className="navbar-icon"
+              title="About the game"
+            />
+        </div>
+        <div className="tooltip" onClick={openLeaderboard}>
+            <img
+              src="/images/trophy.png"
+              alt="Leaderboard"
+              className="navbar-icon"
+              title="Leaderboard"
+            />
+        </div>
         {!isAuthenticated && (
           <div className="tooltip" onClick={openLogin}>
             <img
-              src="/images/user.png"
+              src="/images/login.png"
               alt="Login"
               className="navbar-icon"
               title="Login"
@@ -35,9 +51,6 @@ function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard }) {
             />
           </div>
         )}
-        <div className="tooltip" onClick={openLeaderboard}>
-          <i className="nes-icon trophy is-medium navbar-trophy" title="Leaderboard"></i>
-        </div>
       </div>
     </nav>
   );

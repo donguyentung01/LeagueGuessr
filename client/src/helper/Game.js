@@ -19,7 +19,7 @@ function Game({ hiddenGame, hiddenPlayers, submitPrediction, runeIconDict}) {
   : '';
   const middleIndex = Math.floor(totalRows / 2); // Middle row to place "VS"
   return (
-    <table id={hiddenGame ? hiddenGame.game_id : ''} className="draft">
+    <table className="draft">
       <tbody>
         {/* Draft table rows */}
         {hiddenGame && hiddenGame.game_id && hiddenGame.game_patch && hiddenGame.game_length_seconds !== undefined && runeIconsReady ? (

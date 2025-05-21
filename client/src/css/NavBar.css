@@ -42,8 +42,12 @@
   image-rendering: pixelated;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
+  transition: transform 0.2s ease-in-out;
 }
 
+.navbar-icon:hover {
+  transform: scale(1.2); /* Adjust scale as needed */
+}
 
 .navbar-trophy {
   cursor: pointer;
@@ -53,7 +57,7 @@
 
 @media (max-width: 500px) {
   .navbar-icon, .navbar-logo {
-    width: 12vw;  /* bigger relative size on mobile */
+    width: 9vw;  /* bigger relative size on mobile */
   }
   .navbar {
     padding: 1% 5%;

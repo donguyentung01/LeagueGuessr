@@ -10,6 +10,7 @@ import { isTokenExpired } from './helper/ValidateToken'
 import UserProfile from './helper/UserProfile';
 import GuessTracker from './helper/GuessTracker';
 import Leaderboard from './helper/Leaderboard';
+import Stats from './helper/Stats';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -60,6 +61,7 @@ function App() {
   const [username, setUsername] = useState(null)
   const [recordScore, setRecordScore] = useState(0)
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false)
+  const [isStatsOpen, setIsStatsOpen] = useState(false)
   const [LeaderboardList, setLeaderboardList] = useState([])
   const [runeIconDict, setRuneIconDict] = useState(null)
 
@@ -326,6 +328,7 @@ function App() {
         openProfile={() => setIsUserProfileOpen(true)} 
         isAuthenticated={isAuthenticated}
         openLeaderboard={() => setIsLeaderboardOpen(true)}
+        openStats={() => setIsStatsOpen(true)}
       />
 
       <LoginModal
@@ -348,6 +351,11 @@ function App() {
         isLeaderboardOpen={isLeaderboardOpen}
         onClose={() => setIsLeaderboardOpen(false)}
         LeaderboardList={LeaderboardList}
+      />
+
+      <Stats
+        isStatsOpen={isStatsOpen}
+        onClose={() => setIsStatsOpen(false)}
       />
       
       <UserProfile 

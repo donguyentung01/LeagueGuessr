@@ -1,0 +1,9 @@
+.stats {
+    width: 50%;
+}
+
+@media (max-width: 500px) {
+    .stats {
+        width: 100%;
+    }
+}

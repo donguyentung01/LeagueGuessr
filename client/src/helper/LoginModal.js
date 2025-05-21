@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const LoginModal = ({ isLoginOpen, onClose, setIsAuthenticated, onOpenRegister }) => {
