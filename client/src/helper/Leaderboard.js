@@ -46,7 +46,7 @@ const Leaderboard = ({ isLeaderboardOpen, onClose, LeaderboardList }) => {
               <td className={index + 1 + (currentPage - 1) * itemsPerPage <= 5 ? 'nes-text is-warning' : ''}>
                 {index + 1 + (currentPage - 1) * itemsPerPage}
               </td>
-              <td>{entry.username}</td>
+              <td>{entry.username.length > 15 ? entry.username.slice(0, 15) + '…' : entry.username}</td>
               <td>{entry.record_score}<i className="nes-icon is-small star"></i></td>
             </tr>
           ))}
