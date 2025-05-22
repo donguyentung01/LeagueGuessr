@@ -18,13 +18,32 @@ const Stats = ({ isStatsOpen, onClose }) => {
         <h3 className="nes-text is-warning"> About the game </h3>
         <p className='nes-text'> Guess the outcome of an ARAM game based on draft, runes, spells, and more!</p>
         <h3 className="nes-text is-warning"> Social links </h3>
-        <i class="nes-icon reddit is-small"></i> <a className='nes-text' href="https://www.reddit.com/r/ARAM/comments/1kqn8r8/i_pulled_data_from_10000_aram_matches_in_euw_and/"> r/ARAM </a>
+        <div>
+          <i class="nes-icon twitch is-small"></i> &nbsp;
+          <a 
+            className='nes-text' 
+            href="https://www.twitch.tv/caedrel/clip/CoyBoringPterodactylGingerPower-DvceWTwpsh5ivYf3"
+            target="_blank" 
+            rel="noopener noreferrer"> 
+              Caedrel (1 million+ subs streamer) plays ARAM Guess!
+          </a>
+        </div>
+        <div>
+          <i class="nes-icon reddit is-small"></i> &nbsp;
+          <a 
+            className='nes-text' 
+            href="https://www.reddit.com/r/ARAM/comments/1kqn8r8/i_pulled_data_from_10000_aram_matches_in_euw_and/"
+            target="_blank" 
+            rel="noopener noreferrer">
+            r/ARAM 
+          </a>
+        </div>
         <h3 className="nes-text is-warning"> Reviews </h3>
         <div>
           <div>
-            <span className="nes-text is-primary">GratefulChungus</span>: 
+            <span className="nes-text is-success">u/GratefulChungus</span>:
             <a
-              className="nes-text is-success"
+              className="nes-text is-primary"
               href="https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6xgb4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
               target="_blank"
               rel="noopener noreferrer"
@@ -34,9 +53,9 @@ const Stats = ({ isStatsOpen, onClose }) => {
           </div>
           <br />
           <div>
-            <span className="nes-text is-primary">Kansleren</span>: 
+            <span className="nes-text is-success">u/Kansleren</span>:
             <a
-              className="nes-text is-success"
+              className="nes-text is-primary"
               href="https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6vld6/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
               target="_blank"
               rel="noopener noreferrer"
@@ -47,9 +66,9 @@ const Stats = ({ isStatsOpen, onClose }) => {
           </div>
           <br />
           <div>
-            <span className="nes-text is-primary">metrokaiv</span>: 
+            <span className="nes-text is-success">u/metrokaiv</span>:
             <a
-              className="nes-text is-success"
+              className="nes-text is-primary"
               href="https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6vufn/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"
               target="_blank"
               rel="noopener noreferrer"
