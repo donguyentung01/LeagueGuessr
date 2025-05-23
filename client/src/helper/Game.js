@@ -27,12 +27,12 @@ function Game({ hiddenGame, hiddenPlayers, submitPrediction, runeIconDict}) {
             {/* Mapping over the players and generating rows for blue and red teams */}
             <tr className="game-patch">
               <td colSpan="3" style={{ textAlign: 'center' }} className="game-patch">
-                <span className="nes-text is-primary">  <span className="game-patch-emoji">🛠️</span> Patch: {hiddenGame.game_patch} </span>
+                <span className="nes-text is-success">  <span className="game-patch-emoji">🛠️</span> Patch: {hiddenGame.game_patch} </span>
               </td>
             </tr>
             <tr className="game-length">
               <td colSpan="3" style={{ textAlign: 'center' }} className="game-patch">
-                <span className="nes-text is-primary"> <span className="game-length-emoji">⌛</span>Game Length: {formatGameDuration(hiddenGame.game_length_seconds)} </span>
+                <span className="nes-text is-success"> <span className="game-length-emoji">⌛</span>Game Length: {formatGameDuration(hiddenGame.game_length_seconds)} </span>
               </td>
             </tr>
             {Array.from({ length: 5 }).map((_, index) => (

@@ -1,5 +1,5 @@
 html {
-  background-color: #fdfaf6;
+  background-color: #212529;
 }
 
 .nes-score-line {
@@ -24,13 +24,14 @@ html {
 }
 
 .game-content {
-  background-color: #fdfaf6;
+  background-color: #212529;
   margin: 0;
   display: flex;
   justify-content: center;   /* horizontal center */
   align-items: center;       /* vertical center */
   flex-direction: column;    /* stack children vertically */
   padding: 1rem;             /* some padding for small screens */
+  color: #f2b82f; 
 }
 
 /* Responsive adjustments for small screens */

@@ -2,14 +2,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fdfaf6;
+  background-color: #212529;
   font-family: 'Press Start 2P', cursive;
   padding: 1% 20%; /* Top/bottom: 1%, Left/right: 8% */
   border: none !important;
-  border-bottom: 0.2rem solid #888 !important;
+  border-bottom: 0.1rem solid #4d4200 !important;
   position: sticky !important;
   top: 0;
   z-index: 100 !important;
+  color: #f2b82f; 
 }
 
 .navbar-left {

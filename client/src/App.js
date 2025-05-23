@@ -372,7 +372,7 @@ function App() {
 
       <div class="game-content">
       <h2 class="nes-score-box">
-      <i class="snes-jp-logo"></i>Total score: <span id="score">{totalScore}</span><i class="nes-icon star"></i>
+      <i class="snes-jp-logo nes-text is-warning"></i>Total score: <span id="score">{totalScore}</span><i class="nes-icon star"></i>
       </h2>
       {isRecord && <div>You've made a new record. </div>}
       <GuessTracker guessesLeft={guessesLeft} />
