@@ -44,6 +44,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
+def get_game_id_from_token(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_exp": False})
+        return payload["game_id"]
+    except Exception as e:
+        print("JWT decode error:", e)
+        return None
+
 # **--------set up DB-------**
 @app.on_event("startup")
 async def on_startup():
@@ -197,7 +206,13 @@ async def get_game_by_id(gameId: str, db: AsyncSession) -> GameData:
 
 @app.post("/prediction", response_model = PredictionOut) 
 async def prediction(prediction: Prediction, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> PredictionOut: 
-    game_data = await get_game_by_id(prediction.gameId, db)
+    decrypted_game_id = get_game_id_from_token(prediction.gameId)
+
+    if decrypted_game_id is None:
+        # Token expired or invalid - handle as needed
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    game_data = await get_game_by_id(decrypted_game_id, db)
     game_data_out = convertGameDataToGameDataOut(game_data)
     
     success = game_data.blue_wins == prediction.prediction
@@ -259,8 +274,10 @@ async def get_leaderboard(
 @app.get("/game/{game_id}/hidden_players", response_model=List[HiddenGamePlayerOut])
 async def get_players_for_game(game_id: str, db: AsyncSession = Depends(get_db)) -> List[HiddenGamePlayerOut]:
     # Query to select all players associated with the given game_id
+    decrypted_game_id = get_game_id_from_token(game_id)
+
     result = await db.execute(
-        select(GamePlayer).filter(GamePlayer.game_id == game_id)  # Filter by game_id
+        select(GamePlayer).filter(GamePlayer.game_id == decrypted_game_id)  # Filter by game_id
     )
     
     # Get the list of GamePlayer objects
@@ -278,8 +295,10 @@ async def get_players_for_game(game_id: str, db: AsyncSession = Depends(get_db))
 @app.get("/game/{game_id}/players", response_model=List[GamePlayerOut])
 async def get_players_for_game(game_id: str, db: AsyncSession = Depends(get_db)) -> List[GamePlayerOut]:
     # Query to select all players associated with the given game_id
+    decrypted_game_id = get_game_id_from_token(game_id)
+
     result = await db.execute(
-        select(GamePlayer).filter(GamePlayer.game_id == game_id)  # Filter by game_id
+        select(GamePlayer).filter(GamePlayer.game_id == decrypted_game_id)  # Filter by game_id
     )
     
     # Get the list of GamePlayer objects

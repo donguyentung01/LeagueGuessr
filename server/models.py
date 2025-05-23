@@ -2,6 +2,21 @@ from sqlalchemy import Column, Integer, String, BigInteger, Boolean
 from database import Base
 from pydantic import BaseModel
 from typing import Optional
+from dotenv import load_dotenv
+import os 
+from datetime import datetime, timedelta
+import jwt
+
+load_dotenv() 
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+
+def generate_game_token(game_id):
+    payload = {
+        "game_id": game_id,
+        "exp": datetime.utcnow() + timedelta(minutes=5)  # expires in 5 minutes
+    }
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 class GameData(Base):
     __tablename__ = 'game'
@@ -101,7 +116,6 @@ class HiddenGamePlayerOut(BaseModel):
 
 class HiddenGameDataOut(BaseModel): 
     game_id: str
-    game_start_time: Optional[int] = None
     game_length_seconds: Optional[int] = None
     game_patch: Optional[str] = None
     
@@ -178,8 +192,7 @@ def convertGameDataToGameDataOut(game_data: GameData) -> GameDataOut:
 
 def convertGameDataToHiddenGameDataOut(game_data: GameData) -> HiddenGameDataOut:
     return HiddenGameDataOut(
-        game_id=game_data.game_id,
-        game_start_time=game_data.game_start_time,
+        game_id=generate_game_token(game_data.game_id),
         game_length_seconds=game_data.game_length_seconds,
         game_patch=game_data.game_patch
     )
@@ -190,7 +203,7 @@ def convertGamePlayerToGamePlayerOut(game_player: GamePlayer) -> GamePlayerOut:
 def convertGamePlayerToHiddenGamePlayerOut(game_player: GamePlayer) -> HiddenGamePlayerOut:
     return HiddenGamePlayerOut(
         id=game_player.id,
-        game_id=game_player.game_id,
+        game_id=generate_game_token(game_player.game_id),
         player_index=game_player.player_index,
         champion_name=game_player.champion_name,
         team=game_player.team,
