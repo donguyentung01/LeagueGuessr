@@ -94,7 +94,7 @@ function App() {
   useEffect(() => {
     fetchNewQuestion()
     const access_token = localStorage.getItem("access_token");
-    if (access_token && isTokenExpired(access_token)) {
+    if ((access_token && isTokenExpired(access_token)) || !access_token) {
       localStorage.removeItem("access_token");
       setIsAuthenticated(false); 
     }
