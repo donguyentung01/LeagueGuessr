@@ -94,18 +94,12 @@ function App() {
   useEffect(() => {
     fetchNewQuestion()
     const access_token = localStorage.getItem("access_token");
-    if (!access_token) {
-      console.log("No access token found"); 
-    }
-    else if (access_token && isTokenExpired(access_token)) {
-      console.log("Token expired. Removing token..."); 
+    if (access_token && isTokenExpired(access_token)) {
       localStorage.removeItem("access_token");
       setIsAuthenticated(false); 
     }
     else {
-      console.log("Token is valid"); 
       setIsAuthenticated(true); 
-
     }
   }, []);
 
@@ -122,7 +116,6 @@ function App() {
       .then(data => {
         if (data && data.id) {
           localStorage.setItem('anon_user_id', data.id);
-          console.log('Created anon user with id:', data.id);
         }
       })
       .catch(console.error);
@@ -169,11 +162,9 @@ function App() {
           const data = await response.json();
 
           if (response.ok) {
-            console.log("User data:", data);
             setUsername(data["username"]);
             setRecordScore(data["record_score"]);
           } else {
-            console.error("Failed to fetch user data", data);
             setIsAuthenticated(false);
             localStorage.removeItem("access_token");
           }
@@ -196,7 +187,6 @@ function App() {
 
           if (response.ok) {
             setLeaderboardList(data);
-            console.log(LeaderboardList);
           } else {
             console.error("Failed to fetch leaderboard", data);
           }
@@ -232,7 +222,6 @@ function App() {
         return response.json();
       })
       .then((data) => {
-        console.log("Sending record successfully:", data);
         setIsRecord(data["new_record"]); 
       })
       .catch((error) => {
@@ -288,7 +277,6 @@ function App() {
   
       if (response.ok) {
         const result = await response.json();
-        console.log('Prediction submitted successfully:', result);
         const isCorrect = result["successful_guess"];
         setIsCorrect(isCorrect);
   
