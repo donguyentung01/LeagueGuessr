@@ -15,7 +15,7 @@ const Stats = ({ isStatsOpen, onClose }) => {
   return (
     <dialog className="nes-dialog is-dark is-rounded stats" ref={modalRef}>
       <form method="dialog">
-        <h3 className="nes-text is-warning"> About the game </h3>
+        <h3 className="nes-text is-warning"> What’s this game? </h3>
         <p className='nes-text'> Guess the outcome of an ARAM game based on draft, runes, spells, and more!</p>
         <h3 className="nes-text is-warning"> Social links </h3>
         <div>

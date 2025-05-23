@@ -17,6 +17,20 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
   }, [isCorrect]);
 
   const version = `${hiddenGame.game_patch}.1`;
+  const correctMessages = [
+    "Bingo!🎉",
+    "Nice! You got it!🎉",
+    "Spot on!🎉",
+    "You nailed it!🎉",
+    "Well done!🎉",
+  ];
+  
+  const incorrectMessages = [
+    "Wrong one!💀",
+    "Oops, not quite.💀",
+    "Close, but no.💀",
+  ];
+
   const CHAMPION_IMG_BASE = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/`;
   const SPELL_IMG_BASE = `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/`;
   const ITEM_IMG_BASE = `https://ddragon.leagueoflegends.com/cdn/${version}/img/item/`;
@@ -106,8 +120,8 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
     <dialog className="nes-dialog is-dark is-rounded" ref={modalRef}>
       <form method="dialog">
         <p className={`guess-correct nes-text ${isCorrect === true ? 'is-success' : isCorrect === false ? 'is-error' : ''}`} style={{ textAlign: 'center' }}>
-          {isCorrect === true && "Your guess is correct! 🎉"}
-          {isCorrect === false && "Your guess is incorrect."}
+          {isCorrect === true && correctMessages[Math.floor(Math.random() * correctMessages.length)]}
+          {isCorrect === false && incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)]}
         </p>
         <h3 className={`winner-text nes-text ${actualWinner === 0 ? 'is-error' : 'is-primary'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
         <div className="result-table-container">
@@ -131,7 +145,7 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
 
         <menu className="dialog-menu">
           <button type="button" className="nes-btn is-primary" onClick={onNextQuestion}>
-            Next Question
+            Next
           </button>
         </menu>
       </form>
