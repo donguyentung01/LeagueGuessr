@@ -147,11 +147,11 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
                 <td colSpan="5">
                   <div className="team-kills-bar-wrapper">
                     <div className="team-kills-bar-container">
-                      <div className="team-kills-bar red" style={{ flex: totalKillsRed }}>
-                        {totalKillsRed}
-                      </div>
                       <div className="team-kills-bar blue" style={{ flex: totalKillsBlue }}>
                         {totalKillsBlue}
+                      </div>
+                      <div className="team-kills-bar red" style={{ flex: totalKillsRed }}>
+                        {totalKillsRed}
                       </div>
                       <div className="team-kills-label">Total Kills</div>
                     </div>
