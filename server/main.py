@@ -188,13 +188,18 @@ async def get_random_game(db: AsyncSession = Depends(get_db)) -> HiddenGameDataO
     hidden_game_data_out = convertGameDataToHiddenGameDataOut(game_data)
     return hidden_game_data_out
 
-async def get_game_by_id(gameId: str, db: AsyncSession) -> GameData:
+async def get_game_by_token(gameToken: str, db: AsyncSession) -> GameData:
     # Query to select the game with the given gameId, excluding 'blueWins' column
+    decrypted_game_id = get_game_id_from_token(gameToken)
+    if decrypted_game_id is None:
+        # Token expired or invalid - handle as needed
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
     result = await db.execute(
         select(
             GameData
         )
-        .filter(GameData.game_id == gameId)  # Filter by gameId
+        .filter(GameData.game_id == decrypted_game_id)  # Filter by gameId
     )
 
     game = result.scalars().first()  # Get the first (and only) result
@@ -206,13 +211,7 @@ async def get_game_by_id(gameId: str, db: AsyncSession) -> GameData:
 
 @app.post("/prediction", response_model = PredictionOut) 
 async def prediction(prediction: Prediction, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> PredictionOut: 
-    decrypted_game_id = get_game_id_from_token(prediction.gameId)
-
-    if decrypted_game_id is None:
-        # Token expired or invalid - handle as needed
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-
-    game_data = await get_game_by_id(decrypted_game_id, db)
+    game_data = await get_game_by_token(prediction.gameId, db)
     game_data_out = convertGameDataToGameDataOut(game_data)
     
     success = game_data.blue_wins == prediction.prediction

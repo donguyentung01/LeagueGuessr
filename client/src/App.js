@@ -390,7 +390,7 @@ function App() {
       )}
       {
         guessesLeft === 0 && !isAuthenticated && (
-          <div> <button type="button" class="nes-btn is-warning" onClick={() => setIsLoginOpen(true)}> Log in </button> to join the leaderboard <span className='leaderboard-emoji'>😊 </span> </div>
+          <div> <button type="button" class="nes-btn is-warning" onClick={() => setIsLoginOpen(true)}> Log in </button> to join the leaderboard<span className='leaderboard-emoji'>😊 </span> </div>
         )
       }
       {
