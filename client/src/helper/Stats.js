@@ -18,7 +18,8 @@ const Stats = ({ isStatsOpen, onClose }) => {
         <h3 className="nes-text is-warning"> What’s this game? </h3>
         <p className='nes-text'> Guess the outcome of an ARAM game based on draft, runes, spells, and more!</p>
         <h3 className="nes-text is-warning"> Social links </h3>
-        <div>
+        <p>
+          <div>
           <i class="nes-icon twitch is-small"></i> &nbsp;
           <a 
             className='nes-text' 
@@ -27,8 +28,8 @@ const Stats = ({ isStatsOpen, onClose }) => {
             rel="noopener noreferrer"> 
               Caedrel (1 million+ subs streamer) plays ARAM Guess!
           </a>
-        </div>
-        <div>
+          </div>
+          <div>
           <i class="nes-icon reddit is-small"></i> &nbsp;
           <a 
             className='nes-text' 
@@ -36,8 +37,9 @@ const Stats = ({ isStatsOpen, onClose }) => {
             target="_blank" 
             rel="noopener noreferrer">
             r/ARAM 
-          </a>
-        </div>
+            </a>
+          </div>
+        </p>
         <h3 className="nes-text is-warning"> Reviews </h3>
         <p>
           <div>
