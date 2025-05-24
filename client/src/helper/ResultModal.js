@@ -41,6 +41,12 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
   const maxDamageDealt = Math.max(...gamePlayers.map(p => p.damage_dealt));
   const maxDamageTaken = Math.max(...gamePlayers.map(p => p.damage_taken));
 
+  const totalKillsBlue = blueTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
+  const totalKillsRed = redTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
+  const totalKills = totalKillsBlue + totalKillsRed;
+  const redPercent = Math.round((totalKillsRed / totalKills) * 100);
+  const bluePercent = 100 - redPercent;
+
   const renderRow = (p, index, team) => {
     const dmgDealtPercent = Math.round((p.damage_dealt / maxDamageDealt) * 100);
     const dmgTakenPercent = Math.round((p.damage_taken / maxDamageTaken) * 100);
@@ -137,7 +143,21 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
             </thead>
             <tbody>
               {blueTeamPlayers.map((p, index) => renderRow(p, index, 'blue'))}
-              <tr className="team-separator-row"><td colSpan="5"></td></tr>
+              <tr className="team-separator-row">
+                <td colSpan="5">
+                  <div className="team-kills-bar-wrapper">
+                    <div className="team-kills-bar-container">
+                      <div className="team-kills-bar red" style={{ flex: totalKillsRed }}>
+                        {totalKillsRed}
+                      </div>
+                      <div className="team-kills-bar blue" style={{ flex: totalKillsBlue }}>
+                        {totalKillsBlue}
+                      </div>
+                      <div className="team-kills-label">Total Kills</div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
               {redTeamPlayers.map((p, index) => renderRow(p, index, 'red'))}
             </tbody>
           </table>

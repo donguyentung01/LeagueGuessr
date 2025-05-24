@@ -139,8 +139,61 @@
     height: 100%;            /* make sure parent container has a height */
   }
   
+.team-kills-bar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.team-kills-bar-container {
+  position: relative;
+  display: flex;
+  height: 32px;
+  width: 80%; 
+  max-width: 700px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1px 0;
+  box-shadow: inset 0 0 4px #000;
+  font-weight: bold;
+  font-size: 14px;
+  color: white;
+}
+
+.team-kills-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.team-kills-bar.red {
+  background-color: #e74c3c;
+}
+
+.team-kills-bar.blue {
+  background-color: #3498db;
+}
+
+.team-kills-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%; 
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+  color: #fff;
+  text-shadow: 0 0 3px #000;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
   /* Optional: smaller font-size on smaller screens */
-  @media (max-width: 600px) {
+@media (max-width: 600px) {
     .result-table {
         font-size: 0.5rem;
     }
@@ -150,7 +203,7 @@
     .result-table th,
     .result-table td {
         white-space: nowrap; /* Prevent wrapping in cells */
-        padding: 0.1rem 0.2rem;
+        padding: 0.05rem 0.1rem;
         text-align: center;
         max-width: none !important; /* Remove any max-width limits */
     }
@@ -211,5 +264,30 @@
         font-size: 0.4rem;
         margin-left: 2%;
     }
+
+    .team-kills-bar-container {
+      height: 12px; 
+      font-size:0.4rem; 
+      width: 80%; 
+      max-width: 280px;
+      margin-left: 0;
+      margin-right: auto;
+      justify-content: flex-start;
+    }
+    .team-kills-label {
+      color: #fff;
+      text-shadow: 0 0 3px #000;
+      font-size: 0.4rem;
+      font-weight: bold;
+    }
+    .guess-correct {
+      font-size: 0.6rem;
+    }
+    .winner-text {
+      font-size: 0.6rem;
+    }
+
+    .dialog-menu {
+      margin-top: 1px;
+    }
 }
-  
