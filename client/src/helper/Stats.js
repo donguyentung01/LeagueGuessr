@@ -39,7 +39,7 @@ const Stats = ({ isStatsOpen, onClose }) => {
           </a>
         </div>
         <h3 className="nes-text is-warning"> Reviews </h3>
-        <div>
+        <p>
           <div>
             <span className="nes-text is-success">u/GratefulChungus</span>:
             <a
@@ -76,7 +76,18 @@ const Stats = ({ isStatsOpen, onClose }) => {
               "This is the kind of content we need in this community regardless of your region"
             </a>
           </div>
-        </div>
+        </p>
+
+        <h3 className="nes-text is-warning"> Feedback </h3>
+        <p className="nes-text">
+                <div>Wanna share an idea, bug, or just say hi? </div>
+                <a 
+                  className="nes-text is-primary" 
+                  href="mailto:aramguess@gmail.com"
+                >
+                  <i class="nes-icon gmail is-small"></i> Send a message!
+                </a>
+        </p>  
         <menu className="dialog-menu">
           <button type="button" className="nes-btn" onClick={onClose}>Close</button>
         </menu>
