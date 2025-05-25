@@ -1,0 +1,23 @@
+.emoji {
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+@keyframes pop {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+}
+  
+.timer .nes-text {
+    display: inline-block;
+    animation: pop 1s infinite ease-in-out;
+    /* Animate only when timeLeft <= 5 and > 0 */
+}
+  
+.timer .nes-text.is-error {
+    animation: pop 1s infinite ease-in-out;
+}

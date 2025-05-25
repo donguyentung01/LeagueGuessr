@@ -29,11 +29,20 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
     "You nailed it!🎉",
     "Well done!🎉",
   ];
-  
+
   const incorrectMessages = [
     "Wrong one!💀",
     "Oops, not quite.💀",
     "Close, but no.💀",
+  ];
+
+  const timeoutMessages = [
+    "Time's up!⏰",
+    "Try to be quicker!⚡",
+    "Oops! The clock got you!⏳",
+    "Tick-tock, out of time!🕰️",
+    "No answer? The timer wins!⏲️",
+    "Slowpoke! Time's over!🐢",
   ];
 
   const CHAMPION_IMG_BASE = `https://ddragon.leagueoflegends.com/cdn/${version}/img/champion/`;
@@ -48,7 +57,6 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
 
   const totalKillsBlue = blueTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
   const totalKillsRed = redTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
-  const totalKills = totalKillsBlue + totalKillsRed;
 
   const renderRow = (p, index, team) => {
     const dmgDealtPercent = Math.round((p.damage_dealt / maxDamageDealt) * 100);
@@ -130,7 +138,8 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
       <form method="dialog">
         <p className={`guess-correct nes-text ${isCorrect === true ? 'is-success' : isCorrect === false ? 'is-error' : ''}`} style={{ textAlign: 'center' }}>
           {isCorrect === true && correctMessages[Math.floor(Math.random() * correctMessages.length)]}
-          {isCorrect === false && incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)]}
+          {isCorrect === false && prediction >= 0 && incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)]}
+          {isCorrect === false && prediction === -2 && timeoutMessages[Math.floor(Math.random() * timeoutMessages.length)]}
         </p>
         <h3 className={`winner-text nes-text ${blueWins ? 'is-primary' : 'is-error'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
         <div className="result-table-container">

@@ -11,6 +11,7 @@ import UserProfile from './helper/UserProfile';
 import GuessTracker from './helper/GuessTracker';
 import Leaderboard from './helper/Leaderboard';
 import Stats from './helper/Stats';
+import GuessTimer from './helper/GuessTimer';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -65,9 +66,10 @@ function App() {
   const [LeaderboardList, setLeaderboardList] = useState([])
   const [runeIconDict, setRuneIconDict] = useState(null)
   const [blueWins, setBlueWins] = useState(null)
+  const [timeLeft, setTimeLeft] = useState(10);
 
   const fetchNewQuestion = () => {
-    fetch(`${apiUrl}/game/random`)  // Replace with your API URL
+    fetch(`${apiUrl}/game/random`)  
       .then(response => response.json())
       .then(result => {
         // set game data
@@ -111,7 +113,7 @@ function App() {
       fetch(`${apiUrl}/anon_users/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})  // whatever your API expects
+        body: JSON.stringify({})  
       })
       .then(res => res.json())
       .then(data => {
@@ -235,6 +237,7 @@ function App() {
 
   const handleNextQuestion = () => {
     setPrediction(-1);  // Reset prediction to -1 when the modal is closed
+    setTimeLeft(10);
   };
 
   const resetGame = () => {
@@ -311,6 +314,67 @@ function App() {
       console.error('Error making prediction:', error);
     }
   };
+
+  const submitPredictionTimeout = async () => {
+    try {
+      // Step 1: Get or create anon_user_id
+      let anonUserId = localStorage.getItem("anon_user_id");
+  
+      if (!anonUserId) {
+        const createResponse = await fetch(`${apiUrl}/anon_user/create`, {
+          method: 'POST',
+        });
+  
+        if (!createResponse.ok) {
+          console.error("Failed to create anon_user");
+          return;
+        }
+  
+        const createData = await createResponse.json();
+        anonUserId = createData["anon_user_id"];
+        localStorage.setItem("anon_user_id", anonUserId);
+      }
+  
+      // Step 2: Submit prediction with 0 (because API requires boolean)
+      const response = await fetch(`${apiUrl}/prediction`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          gameId: hiddenGame.game_id,
+          prediction: 0,
+        }),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        const blueWins = result.game_data_out?.blue_wins;
+        setIsCorrect(false);  // timeout is always incorrect
+  
+        setGuessesLeft(guessesLeft - 1);
+        setPrediction(-2); // mark prediction as timeout locally
+        setBlueWins(blueWins);
+  
+        // Step 3: Update anon_user score with correct = false explicitly
+        await fetch(`${apiUrl}/anon_users/update_score`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            anon_user_id: anonUserId,
+            correct: false,
+          }),
+        });
+  
+      } else {
+        console.error('Prediction submission failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error making prediction:', error);
+    }
+  };
   
 
   return (
@@ -370,6 +434,12 @@ function App() {
       <GuessTracker guessesLeft={guessesLeft} />
       {guessesLeft > 0 && (
         <>
+          <GuessTimer
+            submitPredictionTimeout = {submitPredictionTimeout}
+            timeLeft = {timeLeft}
+            setTimeLeft={setTimeLeft}
+            isResultOpen={isResultOpen}
+          />
           <Game
             hiddenGame = {hiddenGame}
             hiddenPlayers = {hiddenPlayers}
