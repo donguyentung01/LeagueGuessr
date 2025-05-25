@@ -280,7 +280,7 @@ function App() {
       if (response.ok) {
         const result = await response.json();
         const isCorrect = result["successful_guess"];
-        const blueWins = result["blue_wins"]
+        const blueWins = result.game_data_out?.blue_wins;
         setIsCorrect(isCorrect);
   
         if (!isCorrect) {
@@ -290,7 +290,7 @@ function App() {
         }
   
         setPrediction(predict);
-        setBlueWins(blueWins)
+        setBlueWins(blueWins);
   
         // Step 3: Update anon_user score
         await fetch(`${apiUrl}/anon_users/update_score`, {

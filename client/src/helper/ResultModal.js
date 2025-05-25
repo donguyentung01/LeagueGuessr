@@ -3,7 +3,13 @@ import '../css/ResultModal.css';
 
 function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hiddenGame, prediction, blueWins }) {
   const modalRef = useRef(null);
-  const winnerText = blueWins === 0 ? 'Red Team Wins' : 'Blue Team Wins';
+  let winnerText;
+  if (blueWins) {
+    winnerText = "Blue Team Wins"
+  }
+  else {
+    winnerText = "Red Team Wins"
+  }
 
   useEffect(() => {
     if (modalRef.current) {
@@ -126,7 +132,7 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
           {isCorrect === true && correctMessages[Math.floor(Math.random() * correctMessages.length)]}
           {isCorrect === false && incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)]}
         </p>
-        <h3 className={`winner-text nes-text ${blueWins === 0 ? 'is-error' : 'is-primary'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
+        <h3 className={`winner-text nes-text ${blueWins ? 'is-primary' : 'is-error'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
         <div className="result-table-container">
           <table className="nes-table is-bordered is-centered is-dark result-table">
             <thead>
