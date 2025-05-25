@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import '../css/ResultModal.css';
 
-function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hiddenGame, prediction }) {
+function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hiddenGame, prediction, blueWins }) {
   const modalRef = useRef(null);
-  const actualWinner = isCorrect ? prediction : 1 - prediction;
-  const winnerText = actualWinner === 0 ? 'Red Team Wins' : 'Blue Team Wins';
+  const winnerText = blueWins === 0 ? 'Red Team Wins' : 'Blue Team Wins';
 
   useEffect(() => {
     if (modalRef.current) {
@@ -44,8 +43,6 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
   const totalKillsBlue = blueTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
   const totalKillsRed = redTeamPlayers.reduce((sum, p) => sum + p.kills, 0);
   const totalKills = totalKillsBlue + totalKillsRed;
-  const redPercent = Math.round((totalKillsRed / totalKills) * 100);
-  const bluePercent = 100 - redPercent;
 
   const renderRow = (p, index, team) => {
     const dmgDealtPercent = Math.round((p.damage_dealt / maxDamageDealt) * 100);
@@ -129,7 +126,7 @@ function ResultModal({ onNextQuestion, isCorrect, gamePlayers, runeIconDict, hid
           {isCorrect === true && correctMessages[Math.floor(Math.random() * correctMessages.length)]}
           {isCorrect === false && incorrectMessages[Math.floor(Math.random() * incorrectMessages.length)]}
         </p>
-        <h3 className={`winner-text nes-text ${actualWinner === 0 ? 'is-error' : 'is-primary'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
+        <h3 className={`winner-text nes-text ${blueWins === 0 ? 'is-error' : 'is-primary'}`} style={{ textAlign: 'center' }}>{winnerText}</h3>
         <div className="result-table-container">
           <table className="nes-table is-bordered is-centered is-dark result-table">
             <thead>

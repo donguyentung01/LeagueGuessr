@@ -64,6 +64,7 @@ function App() {
   const [isStatsOpen, setIsStatsOpen] = useState(false)
   const [LeaderboardList, setLeaderboardList] = useState([])
   const [runeIconDict, setRuneIconDict] = useState(null)
+  const [blueWins, setBlueWins] = useState(null)
 
   const fetchNewQuestion = () => {
     fetch(`${apiUrl}/game/random`)  // Replace with your API URL
@@ -241,6 +242,7 @@ function App() {
     setGuessesLeft(3); 
     setTotalScore(0);
     setIsRecord(false); 
+    setBlueWins(null); 
   }
 
   const submitPrediction = async (predict) => {
@@ -278,6 +280,7 @@ function App() {
       if (response.ok) {
         const result = await response.json();
         const isCorrect = result["successful_guess"];
+        const blueWins = result["blue_wins"]
         setIsCorrect(isCorrect);
   
         if (!isCorrect) {
@@ -287,6 +290,7 @@ function App() {
         }
   
         setPrediction(predict);
+        setBlueWins(blueWins)
   
         // Step 3: Update anon_user score
         await fetch(`${apiUrl}/anon_users/update_score`, {
@@ -384,6 +388,7 @@ function App() {
               runeIconDict={runeIconDict}
               hiddenGame={hiddenGame}
               prediction={prediction}
+              blueWins={blueWins}
             />
           )}
         </>
