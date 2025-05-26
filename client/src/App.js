@@ -1,17 +1,17 @@
 import './css/App.css';
-import React from 'react';
-import Game from './helper/Game'
-import ResultModal from './helper/ResultModal'
-import NavBar from './helper/NavBar';
-import LoginModal from './helper/LoginModal';
-import RegisterModal from './helper/RegisterModal';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Game from './components/Game'
+import NavBar from "./components/NavBar";
+import LoginModal from "./components/LoginModal";
+import RegisterModal from "./components/RegisterModal";
+import Leaderboard from "./components/Leaderboard";
+import Stats from "./components/Stats";
+import UserProfile from "./components/UserProfile";
 import { isTokenExpired } from './helper/ValidateToken'
-import UserProfile from './helper/UserProfile';
-import GuessTracker from './helper/GuessTracker';
-import Leaderboard from './helper/Leaderboard';
-import Stats from './helper/Stats';
-import GuessTimer from './helper/GuessTimer';
+
+import NormalGameMode from "./pages/NormalGameMode";
+import NavBarFull from './components/NavBarFull';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -46,27 +46,36 @@ async function fetchRuneIcons(patch) {
 }
 
 function App() {
-  const [hiddenPlayers, setHiddenPlayers] = useState([]);
-  const [hiddenGame, setHiddenGame] = useState(null); 
-  const [gamePlayers, setGamePlayers] = useState([])
-  const [prediction, setPrediction] = useState(-1);
-  const [isResultOpen, setIsResultOpen] = useState(false); 
-  const [isCorrect, setIsCorrect] = useState(false); 
-  const [guessesLeft, setGuessesLeft] = useState(3); 
-  const [totalScore, setTotalScore] = useState(0); 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false) 
-  const [isRecord, setIsRecord] = useState(false);
-  const [isUserProfileOpen, setIsUserProfileOpen] = useState(false)
-  const [username, setUsername] = useState(null)
-  const [recordScore, setRecordScore] = useState(0)
-  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false)
-  const [isStatsOpen, setIsStatsOpen] = useState(false)
-  const [LeaderboardList, setLeaderboardList] = useState([])
-  const [runeIconDict, setRuneIconDict] = useState(null)
-  const [blueWins, setBlueWins] = useState(null)
-  const [timeLeft, setTimeLeft] = useState(10);
+  // -------------------- Game State --------------------
+const [prediction, setPrediction] = useState(-1);           // User's current prediction
+const [isResultOpen, setIsResultOpen] = useState(false);    // Result modal visibility
+const [isCorrect, setIsCorrect] = useState(false);          // Whether the user's guess was correct
+const [blueWins, setBlueWins] = useState(null);             // Actual outcome: true if blue team won
+const [guessesLeft, setGuessesLeft] = useState(3);          // Number of guesses left
+const [timeLeft, setTimeLeft] = useState(10);               // Countdown timer for each guess
+const [isRecord, setIsRecord] = useState(false);            // Whether the current score is a new record
+const [totalScore, setTotalScore] = useState(0);            // Total score accumulated
+
+// -------------------- Game Data --------------------
+const [hiddenGame, setHiddenGame] = useState(null);         // Current hidden game object
+const [hiddenPlayers, setHiddenPlayers] = useState([]);     // Hidden players (masked for guessing)
+const [gamePlayers, setGamePlayers] = useState([]);         // All players in the current game
+const [runeIconDict, setRuneIconDict] = useState(null);     // Rune icons for display
+const [LeaderboardList, setLeaderboardList] = useState([]); // Leaderboard player list
+
+// -------------------- Modals --------------------
+const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);  // Leaderboard modal
+const [isStatsOpen, setIsStatsOpen] = useState(false);              // Stats modal
+const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);  // User profile modal
+
+// -------------------- Authentication --------------------
+const [isLoginOpen, setIsLoginOpen] = useState(false);       // Login modal visibility
+const [isRegisterOpen, setIsRegisterOpen] = useState(false); // Register modal visibility
+const [isAuthenticated, setIsAuthenticated] = useState(false); // User authentication state
+const [username, setUsername] = useState(null);              // Authenticated user's name
+
+// -------------------- Record Score --------------------
+const [recordScore, setRecordScore] = useState(0);           // Highest score achieved
 
   const fetchNewQuestion = () => {
     fetch(`${apiUrl}/game/random`)  
@@ -376,106 +385,78 @@ function App() {
     }
   };
   
+  const gameState = {
+    isResultOpen,
+    isCorrect,
+    prediction,
+    blueWins,
+    guessesLeft,
+    timeLeft,
+    setTimeLeft,
+    isRecord,
+    totalScore
+  };
+
+  const gameData = {
+    hiddenGame,
+    hiddenPlayers,
+    gamePlayers,
+    runeIconDict,
+    LeaderboardList,
+    recordScore
+  };
+
+  const gameActions = {
+    submitPrediction,
+    handleNextQuestion,
+    resetGame,
+    submitPredictionTimeout,
+  };
+
+  const modals = {
+    isLeaderboardOpen,
+    setIsLeaderboardOpen,
+    isStatsOpen,
+    setIsStatsOpen,
+    isUserProfileOpen,
+    setIsUserProfileOpen,
+  };
+
+  const authState = {
+    isLoginOpen,
+    isRegisterOpen,
+    setIsLoginOpen,
+    setIsRegisterOpen,
+    isAuthenticated,
+    setIsAuthenticated,
+    username
+  };
 
   return (
-    <div>
-      <NavBar 
-        openLogin={() => setIsLoginOpen(true)} 
-        openProfile={() => setIsUserProfileOpen(true)} 
-        isAuthenticated={isAuthenticated}
-        openLeaderboard={() => setIsLeaderboardOpen(true)}
-        openStats={() => setIsStatsOpen(true)}
-      />
+    <Router>
+      <div>
+        <NavBarFull
+          authState={authState}
+          modals={modals}
+          gameData={gameData}
+        />
 
-      <LoginModal
-        isLoginOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        setIsAuthenticated={setIsAuthenticated}
-        onOpenRegister={() => {
-          setIsLoginOpen(false);
-          setIsRegisterOpen(true);
-        }}
-      />
-
-      <RegisterModal 
-        isRegisterOpen={isRegisterOpen} 
-        onClose= {() => setIsRegisterOpen(false)} 
-        setIsAuthenticated={setIsAuthenticated}
-      />
-
-      <Leaderboard
-        isLeaderboardOpen={isLeaderboardOpen}
-        onClose={() => setIsLeaderboardOpen(false)}
-        LeaderboardList={LeaderboardList}
-      />
-
-      <Stats
-        isStatsOpen={isStatsOpen}
-        onClose={() => setIsStatsOpen(false)}
-      />
-      
-      <UserProfile 
-        isUserProfileOpen={isUserProfileOpen} 
-        onClose={() => setIsUserProfileOpen(false)}
-        username={username} 
-        recordScore={recordScore}
-        signOut={() => {
-          setIsUserProfileOpen(false)
-          setIsAuthenticated(false) 
-          localStorage.removeItem("access_token")
-        }}
-      />
-
-      <div class="game-content">
-      <h2 class="nes-score-box">
-      <i class="snes-jp-logo nes-text is-warning"></i>Total score: <span id="score">{totalScore}</span><i class="nes-icon star"></i>
-      </h2>
-      {isRecord && <div>You've made a new record. </div>}
-      <GuessTracker guessesLeft={guessesLeft} />
-      {guessesLeft > 0 && (
-        <>
-          <GuessTimer
-            submitPredictionTimeout = {submitPredictionTimeout}
-            timeLeft = {timeLeft}
-            setTimeLeft={setTimeLeft}
-            isResultOpen={isResultOpen}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <NormalGameMode
+                gameState={gameState}
+                gameData={gameData}
+                gameActions={gameActions}
+                authState={authState}
+              />
+            }
           />
-          <Game
-            hiddenGame = {hiddenGame}
-            hiddenPlayers = {hiddenPlayers}
-            submitPrediction={submitPrediction}
-            runeIconDict={runeIconDict}
-          />
-        </>
-      )}
-      {guessesLeft >= 0 && (
-        <>
-          {isResultOpen && (
-            <ResultModal
-              onNextQuestion={handleNextQuestion}
-              gamePlayers={gamePlayers}
-              isCorrect={isCorrect}
-              runeIconDict={runeIconDict}
-              hiddenGame={hiddenGame}
-              prediction={prediction}
-              blueWins={blueWins}
-            />
-          )}
-        </>
-      )}
-      {
-        guessesLeft === 0 && !isAuthenticated && (
-          <div> <button type="button" class="nes-btn is-warning" onClick={() => setIsLoginOpen(true)}> Log in </button> to join the leaderboard<span className='leaderboard-emoji'>😊 </span> </div>
-        )
-      }
-      {
-        guessesLeft === 0 && (
-          <button type="button" class="nes-btn is-primary" onClick={resetGame}> Try again </button>
-        )
-      }
-    </div>
-    </div>
-  );
+        </Routes>
+      </div>
+    </Router>
+  );  
 }
 
 export default App;
