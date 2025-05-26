@@ -52,7 +52,7 @@ const [isResultOpen, setIsResultOpen] = useState(false);    // Result modal visi
 const [isCorrect, setIsCorrect] = useState(false);          // Whether the user's guess was correct
 const [blueWins, setBlueWins] = useState(null);             // Actual outcome: true if blue team won
 const [guessesLeft, setGuessesLeft] = useState(3);          // Number of guesses left
-const [timeLeft, setTimeLeft] = useState(15);               // Countdown timer for each guess
+const [timeLeft, setTimeLeft] = useState(20);               // Countdown timer for each guess
 const [isRecord, setIsRecord] = useState(false);            // Whether the current score is a new record
 const [totalScore, setTotalScore] = useState(0);            // Total score accumulated
 
@@ -246,7 +246,7 @@ const [recordScore, setRecordScore] = useState(0);           // Highest score ac
 
   const handleNextQuestion = () => {
     setPrediction(-1);  // Reset prediction to -1 when the modal is closed
-    setTimeLeft(15);
+    setTimeLeft(20);
   };
 
   const resetGame = () => {
