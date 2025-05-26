@@ -1,13 +1,6 @@
 import './css/App.css';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Game from './components/Game'
-import NavBar from "./components/NavBar";
-import LoginModal from "./components/LoginModal";
-import RegisterModal from "./components/RegisterModal";
-import Leaderboard from "./components/Leaderboard";
-import Stats from "./components/Stats";
-import UserProfile from "./components/UserProfile";
 import { isTokenExpired } from './helper/ValidateToken'
 
 import NormalGameMode from "./pages/NormalGameMode";
