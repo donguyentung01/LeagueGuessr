@@ -178,6 +178,34 @@ class UpdateScoreRequest(BaseModel):
     anon_user_id: str
     correct: bool
 
+class RoomGame(Base):
+    __tablename__ = 'room_game' 
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    room_id = Column(String(255))
+    game_id = Column(String(255))
+
+class RoomGameOut(BaseModel): 
+    id: int
+    room_id : str
+    game_id : str
+
+class RoomUserScore(Base):
+    __tablename__ = 'room_user_score' 
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    room_id = Column(String(255))
+    user = Column(String(255))
+    score = Column(Integer)
+
+class RoomUserScoreOut(BaseModel):
+    id: int
+    room_id : str
+    user : str
+    score : int
+
+    class Config:
+        from_attributes=True
 
 def convertUsertoUserOut(user: User) -> UserOut: 
     user_out = UserOut(
@@ -216,6 +244,13 @@ def convertGamePlayerToHiddenGamePlayerOut(game_player: GamePlayer) -> HiddenGam
 def convertAnonUserToAnonUserOut(anon_user: AnonUser) -> AnonUserOut:
     return AnonUserOut.from_orm(anon_user)
 
+def convertRoomGameToRoomGameOut(room_game: RoomGame) -> RoomGameOut:
+    return RoomGameOut(
+        id = room_game.id, 
+        room_id = room_game.room_id,  
+        game_id = generate_game_token(room_game.game_id)
+    )
 
-
+def convertRoomUserScoreToRoomUserScoreOut(room_user_score: RoomUserScore) -> RoomUserScoreOut:
+    return RoomUserScoreOut.from_orm(room_user_score)
 

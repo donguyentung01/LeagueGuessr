@@ -2,8 +2,10 @@ from fastapi import FastAPI, Depends, HTTPException, status, Header, Body, Query
 from sqlalchemy import func, update, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import SessionLocal, engine
-from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, GamePlayer, AnonUser, AnonUserOut, UpdateScoreRequest
+from models import Base, GameData, Prediction, User, Token, TokenData, UserCreate, GamePlayer, AnonUser, UpdateScoreRequest, RoomGame, RoomUserScore
+from models import UserOut, PredictionOut, GameDataOut, HiddenGameDataOut, GamePlayerOut, HiddenGamePlayerOut, AnonUserOut, RoomGameOut, RoomUserScoreOut
 from models import convertUsertoUserOut, convertGameDataToGameDataOut, convertGameDataToHiddenGameDataOut, convertGamePlayerToGamePlayerOut, convertGamePlayerToHiddenGamePlayerOut, convertAnonUserToAnonUserOut
+from models import convertRoomGameToRoomGameOut, convertRoomUserScoreToRoomUserScoreOut
 from models import RecordScore, RecordOut
 from sqlalchemy.future import select
 from typing import Annotated, Optional, List
@@ -17,6 +19,8 @@ from dotenv import load_dotenv
 import os
 from uuid import uuid4
 from profanity import profanity
+import random
+import string
 
 load_dotenv() 
 
@@ -356,3 +360,63 @@ async def update_anon_user_score(
     await db.execute(stmt)
     await db.commit()
     return {"status": "success"}
+
+# create challenge
+def generate_challenge_code(length: int = 6) -> str:
+    characters = string.ascii_lowercase + string.digits
+    return ''.join(random.choices(characters, k=length))
+
+async def room_id_exists(db: AsyncSession, room_id: str) -> bool:
+    result = await db.execute(
+        select(RoomGame).where(RoomGame.room_id == room_id)
+    )
+    return result.scalars().first() is not None
+
+@app.post("/room/create", response_model=List[RoomGameOut])
+async def create_room(
+    db: AsyncSession = Depends(get_db)
+) -> List[RoomGameOut]:
+    result = await db.execute(
+        select(GameData.game_id)
+        .order_by(func.random())
+        .limit(10)
+    )
+
+    game_ids = result.scalars().all()
+
+    room_id = generate_challenge_code() 
+    while not room_id_exists(db, room_id): 
+        room_id = generate_challenge_code() 
+
+    output = []
+    for game_id in game_ids: 
+        room_game = RoomGame(
+            room_id = room_id, 
+            game_id = game_id 
+        )
+        db.add(room_game)
+        await db.flush()  # flush to get generated id
+        output.append(convertRoomGameToRoomGameOut(room_game))
+    await db.commit()
+
+    return output 
+
+@app.get("/room/{room_id}", response_model = List[RoomGameOut])
+async def get_room(
+    room_id: str, 
+    db: AsyncSession = Depends(get_db)
+) -> List[RoomGameOut]:
+    result = await db.execute(
+        select(RoomGame)
+        .filter(RoomGame.room_id == room_id)
+        .limit(10)
+    )
+
+    room_games = result.scalars().all() 
+
+    if not room_games:
+        raise HTTPException(status_code=404, detail="Room not found")
+    output = [] 
+    for room_game in room_games: 
+        output.append(convertRoomGameToRoomGameOut(room_game))
+    return output 
