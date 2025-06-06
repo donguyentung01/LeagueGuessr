@@ -4,6 +4,15 @@
 
 ---
 
+## ⚙️ Tech Stack
+
+- 🧠 **Frontend**: [React](https://reactjs.org/)
+- 🚀 **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
+- 🗄️ **Database**: [MySQL](https://www.mysql.com/)
+
+
+---
+
 ## 📈 Stats
 
 - **10,000+ players**
