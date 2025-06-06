@@ -40,35 +40,36 @@ async function fetchRuneIcons(patch) {
 
 function App() {
   // -------------------- Game State --------------------
-const [prediction, setPrediction] = useState(-1);           // User's current prediction
-const [isResultOpen, setIsResultOpen] = useState(false);    // Result modal visibility
-const [isCorrect, setIsCorrect] = useState(false);          // Whether the user's guess was correct
-const [blueWins, setBlueWins] = useState(null);             // Actual outcome: true if blue team won
-const [guessesLeft, setGuessesLeft] = useState(3);          // Number of guesses left
-const [timeLeft, setTimeLeft] = useState(20);               // Countdown timer for each guess
-const [isRecord, setIsRecord] = useState(false);            // Whether the current score is a new record
-const [totalScore, setTotalScore] = useState(0);            // Total score accumulated
+  const [gameStart, setGameStart] = useState(false)
+  const [prediction, setPrediction] = useState(-1);           // User's current prediction
+  const [isResultOpen, setIsResultOpen] = useState(false);    // Result modal visibility
+  const [isCorrect, setIsCorrect] = useState(false);          // Whether the user's guess was correct
+  const [blueWins, setBlueWins] = useState(null);             // Actual outcome: true if blue team won
+  const [guessesLeft, setGuessesLeft] = useState(3);          // Number of guesses left
+  const [timeLeft, setTimeLeft] = useState(20);               // Countdown timer for each guess
+  const [isRecord, setIsRecord] = useState(false);            // Whether the current score is a new record
+  const [totalScore, setTotalScore] = useState(0);            // Total score accumulated
 
 // -------------------- Game Data --------------------
-const [hiddenGame, setHiddenGame] = useState(null);         // Current hidden game object
-const [hiddenPlayers, setHiddenPlayers] = useState([]);     // Hidden players (masked for guessing)
-const [gamePlayers, setGamePlayers] = useState([]);         // All players in the current game
-const [runeIconDict, setRuneIconDict] = useState(null);     // Rune icons for display
-const [LeaderboardList, setLeaderboardList] = useState([]); // Leaderboard player list
+  const [hiddenGame, setHiddenGame] = useState(null);         // Current hidden game object
+  const [hiddenPlayers, setHiddenPlayers] = useState([]);     // Hidden players (masked for guessing)
+  const [gamePlayers, setGamePlayers] = useState([]);         // All players in the current game
+  const [runeIconDict, setRuneIconDict] = useState(null);     // Rune icons for display
+  const [LeaderboardList, setLeaderboardList] = useState([]); // Leaderboard player list
 
 // -------------------- Modals --------------------
-const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);  // Leaderboard modal
-const [isStatsOpen, setIsStatsOpen] = useState(false);              // Stats modal
-const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);  // User profile modal
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);  // Leaderboard modal
+  const [isStatsOpen, setIsStatsOpen] = useState(false);              // Stats modal
+  const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);  // User profile modal
 
 // -------------------- Authentication --------------------
-const [isLoginOpen, setIsLoginOpen] = useState(false);       // Login modal visibility
-const [isRegisterOpen, setIsRegisterOpen] = useState(false); // Register modal visibility
-const [isAuthenticated, setIsAuthenticated] = useState(false); // User authentication state
-const [username, setUsername] = useState(null);              // Authenticated user's name
+  const [isLoginOpen, setIsLoginOpen] = useState(false);       // Login modal visibility
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false); // Register modal visibility
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // User authentication state
+  const [username, setUsername] = useState(null);              // Authenticated user's name
 
 // -------------------- Record Score --------------------
-const [recordScore, setRecordScore] = useState(0);           // Highest score achieved
+  const [recordScore, setRecordScore] = useState(0);           // Highest score achieved
 
   const fetchNewQuestion = () => {
     fetch(`${apiUrl}/game/random`)  
@@ -387,7 +388,9 @@ const [recordScore, setRecordScore] = useState(0);           // Highest score ac
     timeLeft,
     setTimeLeft,
     isRecord,
-    totalScore
+    totalScore,
+    gameStart, 
+    setGameStart
   };
 
   const gameData = {
@@ -424,6 +427,8 @@ const [recordScore, setRecordScore] = useState(0);           // Highest score ac
     setIsAuthenticated,
     username
   };
+
+  console.log("gameStart: ", gameStart);
 
   return (
     <Router>

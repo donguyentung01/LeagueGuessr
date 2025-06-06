@@ -3,20 +3,17 @@ import GuessTimer from "../components/GuessTimer";
 import Game from "../components/Game";
 import ResultModal from "../components/ResultModal";
 
-const NormalGameMode = ({
-  authState: { isAuthenticated, setIsLoginOpen },
+const ChallengeGameMode = ({
   gameState: {
     isResultOpen,
     isCorrect,
     prediction,
     blueWins,
-    guessesLeft,
     timeLeft,
     setTimeLeft,
-    isRecord,
     totalScore,
-    gameStart,
-    setGameStart
+    setTotalScore,
+    guessesLeft
   },
   gameData: {
     hiddenGame,
@@ -38,13 +35,7 @@ const NormalGameMode = ({
       <i className="nes-icon star"></i>
     </h2>
 
-    {isRecord && <div>You've made a new record.</div>}
-
-    <GuessTracker guessesLeft={guessesLeft} />
-
-    {!gameStart && <button type="button" className="play-button nes-btn is-warning" onClick={() => setGameStart(true)}>PLAY</button> }
-
-    {guessesLeft > 0 && gameStart && (
+    {guessesLeft > 0 && (
       <>
         <GuessTimer
           submitPredictionTimeout={submitPredictionTimeout}
@@ -61,7 +52,7 @@ const NormalGameMode = ({
       </>
     )}
 
-    {guessesLeft >= 0 && isResultOpen  && gameStart && (
+    {guessesLeft >= 0 && isResultOpen && (
       <ResultModal
         onNextQuestion={handleNextQuestion}
         gamePlayers={gamePlayers}
@@ -73,30 +64,16 @@ const NormalGameMode = ({
       />
     )}
 
-    {guessesLeft === 0 && !isAuthenticated  && gameStart && (
-      <div>
-        <button
-          type="button"
-          className="nes-btn is-warning"
-          onClick={() => setIsLoginOpen(true)}
-        >
-          Log in
-        </button>{" "}
-        to join the leaderboard
-        <span className="leaderboard-emoji">😊</span>
-      </div>
-    )}
-
-    {guessesLeft === 0 && gameStart && (
+    {guessesLeft === 0 && (
       <button
         type="button"
         className="nes-btn is-primary"
         onClick={resetGame}
       >
-        Try again
       </button>
     )}
   </div>
 );
 
-export default NormalGameMode;
+export default ChallengeGameMode;
+
