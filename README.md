@@ -2,6 +2,14 @@
 
 **Guess the outcome of an ARAM game based on draft, runes, spells, and more!**
 
+
+---
+
+## 📈 Stats
+
+- **10,000+ players**
+- **100,000+ guesses made**
+
 ---
 
 ## ⚙️ Tech Stack
@@ -10,13 +18,6 @@
 - 🚀 **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
 - 🗄️ **Database**: [MySQL](https://www.mysql.com/)
 
-
----
-
-## 📈 Stats
-
-- **10,000+ players**
-- **100,000+ guesses made**
 
 ---
 
