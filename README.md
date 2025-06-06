@@ -33,14 +33,13 @@
 
 ## ⭐ Reviews
 
-> **u/GratefulChungus**  
+> [**u/GratefulChungus**](https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6xgb4/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)  
 > _"This is cool, thanks for putting the time into it!"_
 
-> **u/Kansleren**  
+> [**u/Kansleren**](https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6vld6/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)  
 > _"This was f genius. Great stuff! You're a credit to our community, and your ancestors!"_
 
-> **u/metrokaiv**  
+> [**u/metrokaiv**](https://www.reddit.com/r/ARAM/comments/1kqn8r8/comment/mt6vufn/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)  
 > _"This is the kind of content we need in this community regardless of your region."_
-
 
 
