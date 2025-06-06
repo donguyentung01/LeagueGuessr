@@ -1,6 +1,7 @@
 # 🎮 [ARAM Guess](https://aramguess.com)
 
 **Guess the outcome of an ARAM game based on draft, runes, spells, and more!**
+
 🌐 **Play now:** [https://aramguess.com](https://aramguess.com)
 
 ---
@@ -17,6 +18,7 @@
 - 🧠 **Frontend**: [React](https://reactjs.org/)
 - 🚀 **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
 - 🗄️ **Database**: [MySQL](https://www.mysql.com/)
+- ☁️ **Hosting**: [AWS EC2](https://aws.amazon.com/ec2/)
 
 
 ---
