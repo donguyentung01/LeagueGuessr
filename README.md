@@ -1,7 +1,7 @@
-# 🎮 ARAM Guess
+# 🎮 [ARAM Guess](https://aramguess.com)
 
 **Guess the outcome of an ARAM game based on draft, runes, spells, and more!**
-
+🌐 **Play now:** [https://aramguess.com](https://aramguess.com)
 
 ---
 
