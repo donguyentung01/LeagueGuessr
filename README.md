@@ -4,6 +4,8 @@
 
 🌐 **Play now:** [https://aramguess.com](https://aramguess.com)
 
+<img width="500" alt="Screenshot 2025-06-06 at 12 05 47 AM" src="https://github.com/user-attachments/assets/c570ae19-6cfc-4745-8b87-25b6db75a6f7" />
+
 ---
 
 ## 📈 Stats
