@@ -17,6 +17,7 @@ const Stats = ({ isStatsOpen, onClose }) => {
       <form method="dialog">
         <h3 className="nes-text is-warning"> What’s this game? </h3>
         <p className='nes-text'> Guess the outcome of an ARAM game based on draft, runes, spells, and more!</p>
+        <p className='nes-text'> Currently, <span className='nes-text is-primary'>AramGuess</span> has had <span className='nes-text is-success'> 10,000+ players </span> and <span className='nes-text is-success'> 100,000+ guesses </span> made.</p>
         <h3 className="nes-text is-warning"> Social links </h3>
         <p>
           <div>
@@ -37,7 +38,17 @@ const Stats = ({ isStatsOpen, onClose }) => {
             target="_blank" 
             rel="noopener noreferrer">
             r/ARAM 
-            </a>
+          </a>
+          </div>
+          <div>
+          <i class="nes-icon reddit is-small"></i> &nbsp;
+          <a 
+            className='nes-text' 
+            href="https://www.reddit.com/r/leagueoflegends/comments/1l3k8dh/i_pulled_data_from_10000_aram_matches_in_euw_and/"
+            target="_blank" 
+            rel="noopener noreferrer">
+            r/leagueoflegends
+          </a>
           </div>
         </p>
         <h3 className="nes-text is-warning"> Reviews </h3>
