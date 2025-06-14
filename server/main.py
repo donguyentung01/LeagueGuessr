@@ -28,7 +28,8 @@ app = FastAPI()
 
 # CORS cross-origin policy
 origins = [
-    os.getenv("ORIGIN")
+    os.getenv("ORIGIN"),
+    os.getenv("ORIGIN2")
 ]
 
 app.add_middleware(
