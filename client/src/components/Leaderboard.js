@@ -10,7 +10,7 @@ const Leaderboard = ({ isLeaderboardOpen, onClose, LeaderboardList, setLeaderboa
   const itemsPerPage = 10;
 
   // 🔸 Track leaderboard queue: 420 = Ranked, 450 = ARAM
-  const [leaderboardQueue, setLeaderboardQueue] = useState(420);
+  const [leaderboardQueue, setLeaderboardQueue] = useState(450);
 
   useEffect(() => {
     if (isLeaderboardOpen && modalRef.current) {
@@ -52,16 +52,16 @@ const Leaderboard = ({ isLeaderboardOpen, onClose, LeaderboardList, setLeaderboa
       {/* 🔸 Queue toggle buttons */}
       <div className="queue-toggle">
         <button
-          className={`nes-btn ${leaderboardQueue === 420 ? 'is-warning' : ''}`}
-          onClick={() => setLeaderboardQueue(420)}
-        >
-          Ranked
-        </button>
-        <button
           className={`nes-btn ${leaderboardQueue === 450 ? 'is-warning' : ''}`}
           onClick={() => setLeaderboardQueue(450)}
         >
           ARAM
+        </button>
+        <button
+          className={`nes-btn ${leaderboardQueue === 420 ? 'is-warning' : ''}`}
+          onClick={() => setLeaderboardQueue(420)}
+        >
+          Ranked
         </button>
       </div>
 
