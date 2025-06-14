@@ -25,7 +25,9 @@ class GameData(Base):
     game_start_time = Column(BigInteger, nullable=True)        
     game_length_seconds = Column(Integer, nullable=True)        
     game_patch = Column(String(20), nullable=True)      
-    blue_wins = Column(Boolean, nullable=True)    
+    blue_wins = Column(Boolean, nullable=True) 
+    rank = Column(String(50), nullable=True) 
+    queue = Column(Integer, nullable=True)  
 
 class GameDataOut(BaseModel):
     game_id: str
@@ -33,6 +35,9 @@ class GameDataOut(BaseModel):
     game_length_seconds: Optional[int] = None
     game_patch: Optional[str] = None
     blue_wins: Optional[bool] = None
+    rank: Optional[str] = None
+    queue: Optional[int] = None
+
     class Config:
         from_attributes=True
 
@@ -118,7 +123,8 @@ class HiddenGameDataOut(BaseModel):
     game_id: str
     game_length_seconds: Optional[int] = None
     game_patch: Optional[str] = None
-    
+    rank: Optional[str] = None
+    queue: Optional[int] = None
 
 class User(Base):
     __tablename__ = "users"
@@ -127,6 +133,7 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False, index=True)
     password = Column(String(255), nullable=False)
     record_score = Column(Integer, default=0)
+    record_score_ranked = Column(Integer, default=0)
 
 class Prediction(BaseModel):
     gameId: str
@@ -147,6 +154,7 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     username: str
     record_score: int = 0 
+    record_score_ranked: int = 0
 
 class PredictionOut(BaseModel): 
     successful_guess: bool 
@@ -154,6 +162,7 @@ class PredictionOut(BaseModel):
 
 class RecordScore(BaseModel):
     current_score: int
+    queue: int 
 
 class RecordOut(BaseModel):
     new_record: bool
@@ -211,9 +220,9 @@ def convertUsertoUserOut(user: User) -> UserOut:
     user_out = UserOut(
         username = user.username, 
         record_score = user.record_score, 
+        record_score_ranked = user.record_score_ranked
     )
     return user_out
-
 
 def convertGameDataToGameDataOut(game_data: GameData) -> GameDataOut:
     return GameDataOut.from_orm(game_data)
@@ -222,7 +231,9 @@ def convertGameDataToHiddenGameDataOut(game_data: GameData) -> HiddenGameDataOut
     return HiddenGameDataOut(
         game_id=generate_game_token(game_data.game_id),
         game_length_seconds=game_data.game_length_seconds,
-        game_patch=game_data.game_patch
+        game_patch=game_data.game_patch,
+        rank = game_data.rank,
+        queue = game_data.queue
     )
 
 def convertGamePlayerToGamePlayerOut(game_player: GamePlayer) -> GamePlayerOut:

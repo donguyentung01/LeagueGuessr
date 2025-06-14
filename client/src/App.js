@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { isTokenExpired } from './helper/ValidateToken'
 
-import NormalGameMode from "./pages/NormalGameMode";
+import AramGameMode from "./pages/AramGameMode";
 import NavBarFull from './components/NavBarFull';
+import GuessTracker from './components/GuessTracker';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -46,9 +47,10 @@ function App() {
   const [isCorrect, setIsCorrect] = useState(false);          // Whether the user's guess was correct
   const [blueWins, setBlueWins] = useState(null);             // Actual outcome: true if blue team won
   const [guessesLeft, setGuessesLeft] = useState(3);          // Number of guesses left
-  const [timeLeft, setTimeLeft] = useState(20);               // Countdown timer for each guess
+  //const [timeLeft, setTimeLeft] = useState(20);               // Countdown timer for each guess
   const [isRecord, setIsRecord] = useState(false);            // Whether the current score is a new record
   const [totalScore, setTotalScore] = useState(0);            // Total score accumulated
+  const [queue, setQueue] = useState(0); 
 
 // -------------------- Game Data --------------------
   const [hiddenGame, setHiddenGame] = useState(null);         // Current hidden game object
@@ -69,10 +71,10 @@ function App() {
   const [username, setUsername] = useState(null);              // Authenticated user's name
 
 // -------------------- Record Score --------------------
-  const [recordScore, setRecordScore] = useState(0);           // Highest score achieved
+  const [recordScore, setRecordScore] = useState([]);           // Highest score achieved
 
-  const fetchNewQuestion = () => {
-    fetch(`${apiUrl}/game/random`)  
+  const fetchNewQuestion = (queue) => {
+    fetch(`${apiUrl}/game/random?queue=${queue}`)  
       .then(response => response.json())
       .then(result => {
         // set game data
@@ -98,16 +100,18 @@ function App() {
   }, [hiddenGame]);  
 
   useEffect(() => {
-    fetchNewQuestion()
-    const access_token = localStorage.getItem("access_token");
-    if ((access_token && isTokenExpired(access_token)) || !access_token) {
-      localStorage.removeItem("access_token");
-      setIsAuthenticated(false); 
+    if (gameStart) {
+      fetchNewQuestion(queue)
+      const access_token = localStorage.getItem("access_token");
+      if ((access_token && isTokenExpired(access_token)) || !access_token) {
+        localStorage.removeItem("access_token");
+        setIsAuthenticated(false); 
+      }
+      else {
+        setIsAuthenticated(true); 
+      }
     }
-    else {
-      setIsAuthenticated(true); 
-    }
-  }, []);
+  }, [gameStart]);
 
   useEffect(() => {
     const anonUserId = localStorage.getItem('anon_user_id');
@@ -133,7 +137,7 @@ function App() {
     if (prediction === -1) {
       // Reset the draft to the next question when prediction is reset
       setIsResultOpen(false);  // Close the modal
-      fetchNewQuestion();
+      fetchNewQuestion(queue);
     } else {
       setIsResultOpen(true);  // Open the modal if prediction is set
 
@@ -169,7 +173,7 @@ function App() {
 
           if (response.ok) {
             setUsername(data["username"]);
-            setRecordScore(data["record_score"]);
+            setRecordScore([data["record_score"], data["record_score_ranked"]]);
           } else {
             setIsAuthenticated(false);
             localStorage.removeItem("access_token");
@@ -180,31 +184,6 @@ function App() {
       })();
     }
   }, [isUserProfileOpen]);
-
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      if (isLeaderboardOpen) {
-        try {
-          const response = await fetch(`${apiUrl}/leaderboard?limit=50`, {
-            method: "GET",
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            setLeaderboardList(data);
-          } else {
-            console.error("Failed to fetch leaderboard", data);
-          }
-        } catch (error) {
-          console.error("Network error", error);
-        }
-      }
-    };
-
-    fetchLeaderboard();
-  }, [isLeaderboardOpen]);
-
 
   useEffect(() => {
     if (guessesLeft === 0 && isAuthenticated) {
@@ -219,6 +198,7 @@ function App() {
         },
         body: JSON.stringify({
           current_score: totalScore,
+          queue: queue 
         }),
       })
       .then((response) => {
@@ -240,7 +220,6 @@ function App() {
 
   const handleNextQuestion = () => {
     setPrediction(-1);  // Reset prediction to -1 when the modal is closed
-    setTimeLeft(20);
   };
 
   const resetGame = () => {
@@ -249,6 +228,7 @@ function App() {
     setTotalScore(0);
     setIsRecord(false); 
     setBlueWins(null); 
+    setGameStart(false);
   }
 
   const submitPrediction = async (predict) => {
@@ -318,6 +298,7 @@ function App() {
     }
   };
 
+  {/*
   const submitPredictionTimeout = async () => {
     try {
       // Step 1: Get or create anon_user_id
@@ -378,6 +359,7 @@ function App() {
       console.error('Error making prediction:', error);
     }
   };
+  */}
   
   const gameState = {
     isResultOpen,
@@ -385,12 +367,12 @@ function App() {
     prediction,
     blueWins,
     guessesLeft,
-    timeLeft,
-    setTimeLeft,
     isRecord,
     totalScore,
     gameStart, 
-    setGameStart
+    setGameStart,
+    queue,
+    setQueue 
   };
 
   const gameData = {
@@ -399,6 +381,7 @@ function App() {
     gamePlayers,
     runeIconDict,
     LeaderboardList,
+    setLeaderboardList,
     recordScore
   };
 
@@ -406,7 +389,7 @@ function App() {
     submitPrediction,
     handleNextQuestion,
     resetGame,
-    submitPredictionTimeout,
+    setQueue,
   };
 
   const modals = {
@@ -428,8 +411,6 @@ function App() {
     username
   };
 
-  console.log("gameStart: ", gameStart);
-
   return (
     <Router>
       <div>
@@ -437,13 +418,54 @@ function App() {
           authState={authState}
           modals={modals}
           gameData={gameData}
+          gameActions={gameActions}
         />
+
+        <div className="game-content">
+          <h2 className="nes-score-box">
+            <i className="snes-jp-logo nes-text is-warning"></i>
+            Total score: <span id="score">{totalScore}</span>
+            <i className="nes-icon star"></i>
+          </h2>
+
+          <GuessTracker guessesLeft={guessesLeft} />
+
+          {!gameStart && (
+            <div> 
+              <div> 
+              <button
+                type="button"
+                className="play-button nes-btn is-warning"
+                onClick={() => {
+                  setGameStart(true);
+                  setQueue(420); 
+                }}
+              >
+                Guess Ranked Games
+              </button>
+              </div>
+
+              <div> 
+              <button
+                type="button"
+                className="play-button nes-btn is-warning"
+                onClick={() => {
+                  setGameStart(true);
+                  setQueue(450); 
+                }}
+              >
+                Guess ARAM Games
+              </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         <Routes>
           <Route
             path="/"
             element={
-              <NormalGameMode
+              <AramGameMode
                 gameState={gameState}
                 gameData={gameData}
                 gameActions={gameActions}

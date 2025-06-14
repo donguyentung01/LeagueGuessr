@@ -35,6 +35,11 @@ function Game({ hiddenGame, hiddenPlayers, submitPrediction, runeIconDict}) {
                 <span className="nes-text is-success"> <span className="game-length-emoji">⌛</span>Game Length: {formatGameDuration(hiddenGame.game_length_seconds)} </span>
               </td>
             </tr>
+            <tr className="game-rank">
+              <td colSpan="3" style={{ textAlign: 'center' }} className="game-rank">
+                <span className="nes-text is-success"> <span className="game-rank-emoji">🛡️</span>Rank: {hiddenGame.rank}</span>
+              </td>
+            </tr>
             {Array.from({ length: 5 }).map((_, index) => (
                 <tr key={index}>
                     <td>

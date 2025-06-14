@@ -179,16 +179,22 @@ async def read_users_me(
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/game/random", response_model = HiddenGameDataOut)
-async def get_random_game(db: AsyncSession = Depends(get_db)) -> HiddenGameDataOut:
+@app.get("/game/random", response_model=HiddenGameDataOut)
+async def get_random_game(
+    queue: int,
+    db: AsyncSession = Depends(get_db)
+) -> HiddenGameDataOut:
     result = await db.execute(
-        select(
-            GameData
-        )
+        select(GameData)
+        .where(GameData.queue == queue)
         .order_by(func.random())
     )
 
-    game_data = result.scalars().first() 
+    game_data = result.scalars().first()
+
+    if not game_data:
+        raise HTTPException(status_code=404, detail="No game found for the given queue.")
+
     hidden_game_data_out = convertGameDataToHiddenGameDataOut(game_data)
     return hidden_game_data_out
 
@@ -226,8 +232,8 @@ async def prediction(prediction: Prediction, db: AsyncSession = Depends(get_db),
     )
     return out 
 
-@app.post("/set_record_score", response_model = RecordOut) 
-async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> RecordOut: 
+@app.post("/set_record_score", response_model=RecordOut)
+async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> RecordOut:
     current_user = None
     if authorization:
         scheme, _, token = authorization.partition(" ")
@@ -236,42 +242,64 @@ async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), 
                 current_user = await get_current_user(token, db)
             except HTTPException:
                 pass  # treat as unauthenticated if token is invalid
-    
+
     if not current_user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     current_score = data.current_score
-    if current_score <= current_user.record_score:
-        record_out = RecordOut(
-            new_record = False,
-            current_record = current_user.record_score
+    queue = data.queue
+
+    # Determine which record field to use
+    if queue == 420:
+        current_record = current_user.record_score_ranked
+        if current_score <= current_record:
+            return RecordOut(new_record=False, current_record=current_record)
+        
+        stmt = (
+            update(User)
+            .where(User.id == current_user.id)
+            .values(record_score_ranked=current_score)
         )
-        return record_out
-    else:
-        # Update the record_score
+    elif queue == 450:
+        current_record = current_user.record_score
+        if current_score <= current_record:
+            return RecordOut(new_record=False, current_record=current_record)
+        
         stmt = (
             update(User)
             .where(User.id == current_user.id)
             .values(record_score=current_score)
         )
-        await db.execute(stmt)
-        await db.commit()
+    else:
+        raise HTTPException(status_code=400, detail="Invalid queue value")
 
-        record_out = RecordOut(
-            new_record = True,
-            current_record = current_user.record_score
-        )
-        return record_out
+    await db.execute(stmt)
+    await db.commit()
+
+    return RecordOut(new_record=True, current_record=current_score)
+
 
 @app.get("/leaderboard", response_model=List[UserOut])
 async def get_leaderboard(
-    limit: int = Query(50, ge=1, le=100),  # Default 50, min 1, max 100
+    limit: int = 50,
+    queue: int = 450,
     db: AsyncSession = Depends(get_db)
 ) -> List[UserOut]:
+    if not (1 <= limit <= 100):
+        raise HTTPException(status_code=400, detail="Limit must be between 1 and 100")
+
+    if queue == 450:
+        order_by_column = User.record_score
+    elif queue == 420:
+        order_by_column = User.record_score_ranked
+    else:
+        raise HTTPException(status_code=400, detail="Unsupported queue type")
+
     result = await db.execute(
-        select(User).order_by(desc(User.record_score)).limit(limit)
+        select(User).order_by(desc(order_by_column)).limit(limit)
     )
     users = result.scalars().all()
+    
     return [convertUsertoUserOut(user) for user in users]
 
 @app.get("/game/{game_id}/hidden_players", response_model=List[HiddenGamePlayerOut])

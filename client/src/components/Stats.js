@@ -16,8 +16,8 @@ const Stats = ({ isStatsOpen, onClose }) => {
     <dialog className="nes-dialog is-dark is-rounded stats" ref={modalRef}>
       <form method="dialog">
         <h3 className="nes-text is-warning"> What’s this game? </h3>
-        <p className='nes-text'> Guess the outcome of an ARAM game based on draft, runes, spells, and more!</p>
-        <p className='nes-text'> Currently, <span className='nes-text is-primary'>AramGuess</span> has had <span className='nes-text is-success'> 10,000+ players </span> and <span className='nes-text is-success'> 100,000+ guesses </span> made.</p>
+        <p className='nes-text'> Guess the outcome of League of Legends games based on draft, runes, spells, and more!</p>
+        <p className='nes-text'> Currently, <span className='nes-text is-primary'>LeagueGuessr</span> (previously called <span className='nes-text is-primary'>AramGuess</span>) has had <span className='nes-text is-success'> 10,000+ players </span> and <span className='nes-text is-success'> 100,000+ guesses </span> made.</p>
         <h3 className="nes-text is-warning"> Social links </h3>
         <p>
           <div>
@@ -27,7 +27,7 @@ const Stats = ({ isStatsOpen, onClose }) => {
             href="https://www.twitch.tv/caedrel/clip/CoyBoringPterodactylGingerPower-DvceWTwpsh5ivYf3"
             target="_blank" 
             rel="noopener noreferrer"> 
-              Caedrel (1 million+ subs streamer) plays ARAM Guess!
+              Caedrel (1 million+ subs streamer) plays LeagueGuessr!
           </a>
           </div>
           <div>

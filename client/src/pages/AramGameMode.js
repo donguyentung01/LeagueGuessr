@@ -1,9 +1,8 @@
-import GuessTracker from "../components/GuessTracker";
-import GuessTimer from "../components/GuessTimer";
+//import GuessTimer from "../components/GuessTimer";
 import Game from "../components/Game";
 import ResultModal from "../components/ResultModal";
 
-const NormalGameMode = ({
+const AramGameMode = ({
   authState: { isAuthenticated, setIsLoginOpen },
   gameState: {
     isResultOpen,
@@ -16,7 +15,9 @@ const NormalGameMode = ({
     isRecord,
     totalScore,
     gameStart,
-    setGameStart
+    setGameStart,
+    queue,
+    setQueue
   },
   gameData: {
     hiddenGame,
@@ -32,26 +33,19 @@ const NormalGameMode = ({
   },
 }) => (
   <div className="game-content">
-    <h2 className="nes-score-box">
-      <i className="snes-jp-logo nes-text is-warning"></i>Total score:{" "}
-      <span id="score">{totalScore}</span>
-      <i className="nes-icon star"></i>
-    </h2>
 
     {isRecord && <div>You've made a new record.</div>}
 
-    <GuessTracker guessesLeft={guessesLeft} />
-
-    {!gameStart && <button type="button" className="play-button nes-btn is-warning" onClick={() => setGameStart(true)}>PLAY</button> }
-
     {guessesLeft > 0 && gameStart && (
       <>
+        {/*
         <GuessTimer
           submitPredictionTimeout={submitPredictionTimeout}
           timeLeft={timeLeft}
           setTimeLeft={setTimeLeft}
           isResultOpen={isResultOpen}
         />
+        */}
         <Game
           hiddenGame={hiddenGame}
           hiddenPlayers={hiddenPlayers}
@@ -88,15 +82,18 @@ const NormalGameMode = ({
     )}
 
     {guessesLeft === 0 && gameStart && (
-      <button
-        type="button"
-        className="nes-btn is-primary"
-        onClick={resetGame}
-      >
-        Try again
-      </button>
+        <button
+            type="button"
+            className="nes-btn is-primary"
+            onClick={() => {
+                resetGame();
+            }}
+        >
+            Try again
+        </button>
     )}
   </div>
 );
 
-export default NormalGameMode;
+export default AramGameMode;
+

@@ -2,7 +2,7 @@ import React from 'react';
 import '../css/fonts.css';
 import '../css/NavBar.css';
 
-function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard, openStats }) {
+function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard, openStats, resetGame, resetQueue }) {
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -11,7 +11,9 @@ function NavBar({ isAuthenticated, openLogin, openProfile, openLeaderboard, open
           alt="LoL Icon"
           className="navbar-logo"
         />
-        <p className="title navbar-title">aramguess</p>
+        <p className="title navbar-title" onClick={() => { resetGame(); resetQueue(); }} style={{ cursor: 'pointer' }}>
+          leagueguessr
+        </p>
       </div>
 
       <div className="navbar-right">

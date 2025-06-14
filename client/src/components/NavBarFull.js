@@ -6,7 +6,7 @@ import Leaderboard from "./Leaderboard";
 import Stats from "./Stats";
 import UserProfile from "./UserProfile";
 
-const NavBarFull = ({ authState, modals, gameData }) => {
+const NavBarFull = ({ authState, modals, gameData, gameActions }) => {
   // Destructure auth-related state
   const {
     isLoginOpen,
@@ -31,8 +31,16 @@ const NavBarFull = ({ authState, modals, gameData }) => {
   // Destructure game-related data
   const {
     LeaderboardList,
+    setLeaderboardList,
     recordScore,
   } = gameData;
+
+  const {
+    submitPrediction,
+    handleNextQuestion,
+    resetGame,
+    setQueue
+  } = gameActions; 
 
   const handleSignOut = () => {
     setIsUserProfileOpen(false);
@@ -48,6 +56,8 @@ const NavBarFull = ({ authState, modals, gameData }) => {
         isAuthenticated={isAuthenticated}
         openLeaderboard={() => setIsLeaderboardOpen(true)}
         openStats={() => setIsStatsOpen(true)}
+        resetGame={() => resetGame()}
+        resetQueue={() => setQueue(0)}
       />
 
       <LoginModal
@@ -70,6 +80,7 @@ const NavBarFull = ({ authState, modals, gameData }) => {
         isLeaderboardOpen={isLeaderboardOpen}
         onClose={() => setIsLeaderboardOpen(false)}
         LeaderboardList={LeaderboardList}
+        setLeaderboardList={setLeaderboardList}
       />
 
       <Stats

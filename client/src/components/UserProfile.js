@@ -14,8 +14,9 @@ const UserProfile = ({ isUserProfileOpen, onClose, username, recordScore, signOu
   return (
     <dialog className="nes-dialog is-dark is-rounded" ref={modalRef}>
       <form method="dialog">
-        <p>Hi, <strong>{username}</strong></p>
-        <p>Your record score is <strong>{recordScore}</strong></p>
+        <p>Hi, <strong className='nes-text is-primary'>{username}</strong></p>
+        <p>Your record score for Ranked Games is <strong className='nes-text is-warning'>{recordScore[1]}</strong>.</p>
+        <p>Your record score for ARAM Games is <strong className='nes-text is-warning'>{recordScore[0]}</strong>.</p>
         <menu className="dialog-menu">
           <button type="button" className="nes-btn" onClick={onClose}>Close</button>
           <button type="button" className="nes-btn is-error" onClick={signOut}>Sign Out</button>
