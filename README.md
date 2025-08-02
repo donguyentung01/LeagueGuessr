@@ -27,9 +27,11 @@
 
 ## 🌐 Social Links
 
+- My Substack [blogpost](https://substack.com/home/post/p-169903718) about this project
 - [Caedrel](https://www.twitch.tv/caedrel/clip/CoyBoringPterodactylGingerPower-DvceWTwpsh5ivYf3) (1M+ subs streamer) plays ARAM Guess!
 - [r/ARAM](https://www.reddit.com/r/ARAM/comments/1kqn8r8/i_pulled_data_from_10000_aram_matches_in_euw_and/)
 - [r/leagueoflegends](https://www.reddit.com/r/leagueoflegends/comments/1l3k8dh/i_pulled_data_from_10000_aram_matches_in_euw_and/)
+
 
 ---
 
