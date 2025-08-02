@@ -21,13 +21,12 @@
 - 🚀 **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
 - 🗄️ **Database**: [MySQL](https://www.mysql.com/)
 - ☁️ **Hosting**: [AWS EC2](https://aws.amazon.com/ec2/)
-
+- My Substack [blogpost](https://open.substack.com/pub/tungdo01/p/i-created-a-league-of-legends-mini?r=rt1ju&utm_campaign=post&utm_medium=web) about this project in more details. 
 
 ---
 
 ## 🌐 Social Links
 
-- My Substack [blogpost](https://open.substack.com/pub/tungdo01/p/i-created-a-league-of-legends-mini?r=rt1ju&utm_campaign=post&utm_medium=web) about this project
 - [Caedrel](https://www.twitch.tv/caedrel/clip/CoyBoringPterodactylGingerPower-DvceWTwpsh5ivYf3) (1M+ subs streamer) plays ARAM Guess!
 - [r/ARAM](https://www.reddit.com/r/ARAM/comments/1kqn8r8/i_pulled_data_from_10000_aram_matches_in_euw_and/)
 - [r/leagueoflegends](https://www.reddit.com/r/leagueoflegends/comments/1l3k8dh/i_pulled_data_from_10000_aram_matches_in_euw_and/)
