@@ -21,7 +21,7 @@
 - 🚀 **Backend**: [FastAPI](https://fastapi.tiangolo.com/)
 - 🗄️ **Database**: [MySQL](https://www.mysql.com/)
 - ☁️ **Hosting**: [AWS EC2](https://aws.amazon.com/ec2/)
-- My Substack [blogpost](https://open.substack.com/pub/tungdo01/p/i-created-a-league-of-legends-mini?r=rt1ju&utm_campaign=post&utm_medium=web) about this project in more details. 
+- 📝 **Substack [Blogpost](https://open.substack.com/pub/tungdo01/p/i-created-a-league-of-legends-mini?r=rt1ju&utm_campaign=post&utm_medium=web)** about this project in more details. 
 
 ---
 
