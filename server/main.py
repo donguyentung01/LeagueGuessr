@@ -21,6 +21,7 @@ from uuid import uuid4
 from profanity import profanity
 import random
 import string
+import sys
 
 load_dotenv() 
 
@@ -220,42 +221,17 @@ async def get_game_by_token(gameToken: str, db: AsyncSession) -> GameData:
 
     return game
 
-@app.post("/prediction", response_model = PredictionOut) 
-async def prediction(prediction: Prediction, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> PredictionOut: 
-    game_data = await get_game_by_token(prediction.gameId, db)
-    game_data_out = convertGameDataToGameDataOut(game_data)
-    
-    success = game_data.blue_wins == prediction.prediction
-
-    out = PredictionOut(
-        successful_guess = success, 
-        game_data_out = game_data_out, 
-    )
-    return out 
-
-@app.post("/set_record_score", response_model=RecordOut)
-async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> RecordOut:
-    current_user = None
-    if authorization:
-        scheme, _, token = authorization.partition(" ")
-        if scheme.lower() == "bearer" and token:
-            try:
-                current_user = await get_current_user(token, db)
-            except HTTPException:
-                pass  # treat as unauthenticated if token is invalid
-
-    if not current_user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-    current_score = data.current_score
-    queue = data.queue
-
-    # Determine which record field to use
+async def update_record_score(
+    db: AsyncSession,
+    current_user: User,
+    current_score: int,
+    queue: int
+) -> RecordOut:
     if queue == 420:
         current_record = current_user.record_score_ranked
         if current_score <= current_record:
             return RecordOut(new_record=False, current_record=current_record)
-        
+
         stmt = (
             update(User)
             .where(User.id == current_user.id)
@@ -265,7 +241,7 @@ async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), 
         current_record = current_user.record_score
         if current_score <= current_record:
             return RecordOut(new_record=False, current_record=current_record)
-        
+
         stmt = (
             update(User)
             .where(User.id == current_user.id)
@@ -279,6 +255,127 @@ async def setRecordScore(data: RecordScore, db: AsyncSession = Depends(get_db), 
 
     return RecordOut(new_record=True, current_record=current_score)
 
+
+@app.post("/prediction", response_model = PredictionOut) 
+async def prediction(prediction: Prediction, db: AsyncSession = Depends(get_db), authorization: Optional[str] = Header(None)) -> PredictionOut: 
+    game_data = await get_game_by_token(prediction.gameId, db)
+    game_data_out = convertGameDataToGameDataOut(game_data)
+    
+    success = game_data.blue_wins == prediction.prediction
+
+    out = PredictionOut(
+        successful_guess = success, 
+        game_data_out = game_data_out, 
+    )
+
+    stmt = (
+        update(AnonUser)
+        .where(AnonUser.id == prediction.anon_user_id)
+        .values(
+            guesses=AnonUser.guesses + 1,
+            correct_guesses=AnonUser.correct_guesses + (1 if success else 0)
+        )
+    )
+
+    await db.execute(stmt)
+    await db.commit()
+
+    if authorization:
+        print("HELLO FROM FASTAPI", file=sys.stderr, flush=True)
+        scheme, _, token = authorization.partition(" ")
+        if scheme.lower() == "bearer" and token:
+            try:
+                current_user = await get_current_user(token, db)
+
+                if prediction.queue == 420:  # ranked queue
+                    new_score = (
+                        current_user.current_score_ranked + 1 if success else current_user.current_score_ranked
+                    )
+                    stmt = (
+                        update(User)
+                        .where(User.id == current_user.id)
+                        .values(current_score_ranked=new_score)
+                    )
+                elif prediction.queue == 450:  # normal ARAM queue
+                    new_score = (
+                        current_user.current_score + 1 if success else  current_user.current_score
+                    )
+                    stmt = (
+                        update(User)
+                        .where(User.id == current_user.id)
+                        .values(current_score=new_score)
+                    )
+                else:
+                    raise HTTPException(
+                        status_code=400, detail="Invalid queue value"
+                    )
+
+                await db.execute(stmt)
+                await db.commit()
+
+            except HTTPException:
+                pass  # ignore invalid token
+
+    return out 
+
+@app.post("/set_record_score", response_model=RecordOut)
+async def setRecordScore(
+    data: RecordScore,
+    db: AsyncSession = Depends(get_db),
+    authorization: Optional[str] = Header(None)
+) -> RecordOut:
+
+    current_user = None
+    if authorization:
+        scheme, _, token = authorization.partition(" ")
+        if scheme.lower() == "bearer" and token:
+            try:
+                current_user = await get_current_user(token, db)
+            except HTTPException:
+                pass  
+
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    queue = data.queue
+
+    if queue == 420:
+        current_score = current_user.current_score_ranked
+        current_record = current_user.record_score_ranked
+        if current_score <= current_record:
+            return RecordOut(new_record=False, current_record=current_record)
+
+        stmt = (
+            update(User)
+            .where(User.id == current_user.id)
+            .values(
+                record_score_ranked=current_score,
+                current_score_ranked=0   # reset for next game
+            )
+        )
+
+    elif queue == 450:
+        current_score = current_user.current_score
+        current_record = current_user.record_score
+        if current_score <= current_record:
+            return RecordOut(new_record=False, current_record=current_record)
+
+        stmt = (
+            update(User)
+            .where(User.id == current_user.id)
+            .values(
+                record_score=current_score,
+                current_score=0   # reset for next game
+            )
+        )
+
+    else:
+        raise HTTPException(status_code=400, detail="Invalid queue value")
+
+    await db.execute(stmt)
+    await db.commit()
+
+    return RecordOut(new_record=True, current_record=current_score)
 
 @app.get("/leaderboard", response_model=List[UserOut])
 async def get_leaderboard(
@@ -373,6 +470,7 @@ async def get_anon_user(
         raise HTTPException(status_code=404, detail="AnonUser not found")
     return convertAnonUserToAnonUserOut(anon_user)
 
+'''
 @app.post("/anon_users/update_score")
 async def update_anon_user_score(
     data: UpdateScoreRequest,
@@ -389,63 +487,4 @@ async def update_anon_user_score(
     await db.execute(stmt)
     await db.commit()
     return {"status": "success"}
-
-# create challenge
-def generate_challenge_code(length: int = 6) -> str:
-    characters = string.ascii_lowercase + string.digits
-    return ''.join(random.choices(characters, k=length))
-
-async def room_id_exists(db: AsyncSession, room_id: str) -> bool:
-    result = await db.execute(
-        select(RoomGame).where(RoomGame.room_id == room_id)
-    )
-    return result.scalars().first() is not None
-
-@app.post("/room/create", response_model=List[RoomGameOut])
-async def create_room(
-    db: AsyncSession = Depends(get_db)
-) -> List[RoomGameOut]:
-    result = await db.execute(
-        select(GameData.game_id)
-        .order_by(func.random())
-        .limit(10)
-    )
-
-    game_ids = result.scalars().all()
-
-    room_id = generate_challenge_code() 
-    while not room_id_exists(db, room_id): 
-        room_id = generate_challenge_code() 
-
-    output = []
-    for game_id in game_ids: 
-        room_game = RoomGame(
-            room_id = room_id, 
-            game_id = game_id 
-        )
-        db.add(room_game)
-        await db.flush()  # flush to get generated id
-        output.append(convertRoomGameToRoomGameOut(room_game))
-    await db.commit()
-
-    return output 
-
-@app.get("/room/{room_id}", response_model = List[RoomGameOut])
-async def get_room(
-    room_id: str, 
-    db: AsyncSession = Depends(get_db)
-) -> List[RoomGameOut]:
-    result = await db.execute(
-        select(RoomGame)
-        .filter(RoomGame.room_id == room_id)
-        .limit(10)
-    )
-
-    room_games = result.scalars().all() 
-
-    if not room_games:
-        raise HTTPException(status_code=404, detail="Room not found")
-    output = [] 
-    for room_game in room_games: 
-        output.append(convertRoomGameToRoomGameOut(room_game))
-    return output 
+'''

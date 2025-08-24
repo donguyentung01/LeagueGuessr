@@ -132,12 +132,16 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
     password = Column(String(255), nullable=False)
+    current_score = Column(Integer, default=0) 
+    current_score_ranked = Column(Integer, default=0) 
     record_score = Column(Integer, default=0)
     record_score_ranked = Column(Integer, default=0)
 
 class Prediction(BaseModel):
     gameId: str
+    anon_user_id: str
     prediction: bool
+    queue: int
 
 class Token(BaseModel):
     access_token: str
@@ -161,7 +165,6 @@ class PredictionOut(BaseModel):
     game_data_out: GameDataOut
 
 class RecordScore(BaseModel):
-    current_score: int
     queue: int 
 
 class RecordOut(BaseModel):

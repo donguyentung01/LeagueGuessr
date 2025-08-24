@@ -189,6 +189,7 @@ function App() {
     if (guessesLeft === 0 && isAuthenticated) {
   
       const accessToken = localStorage.getItem("access_token");
+      const anonUserId = localStorage.getItem('anon_user_id');
 
       fetch(`${apiUrl}/set_record_score`, {
         method: "POST",
@@ -197,7 +198,6 @@ function App() {
           "Authorization": `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          current_score: totalScore,
           queue: queue 
         }),
       })
@@ -235,6 +235,7 @@ function App() {
     try {
       // Step 1: Get or create anon_user_id
       let anonUserId = localStorage.getItem("anon_user_id");
+      let token = localStorage.getItem("access_token");
   
       if (!anonUserId) {
         const createResponse = await fetch(`${apiUrl}/anon_user/create`, {
@@ -256,10 +257,13 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           gameId: hiddenGame.game_id,
           prediction: predict,
+          anon_user_id: anonUserId,
+          queue: queue
         }),
       });
   
@@ -279,16 +283,16 @@ function App() {
         setBlueWins(blueWins);
   
         // Step 3: Update anon_user score
-        await fetch(`${apiUrl}/anon_users/update_score`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            anon_user_id: anonUserId,
-            correct: isCorrect,
-          }),
-        });
+        //await fetch(`${apiUrl}/anon_users/update_score`, {
+        //  method: 'POST',
+        //  headers: {
+        //    'Content-Type': 'application/json',
+        //  },
+        //  body: JSON.stringify({
+        //    anon_user_id: anonUserId,
+        //    correct: isCorrect,
+        //  }),
+        //});
   
       } else {
         console.error('Prediction submission failed:', response.statusText);
