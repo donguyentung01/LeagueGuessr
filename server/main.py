@@ -342,14 +342,11 @@ async def setRecordScore(
     if queue == 420:
         current_score = current_user.current_score_ranked
         current_record = current_user.record_score_ranked
-        if current_score <= current_record:
-            return RecordOut(new_record=False, current_record=current_record)
-
         stmt = (
             update(User)
             .where(User.id == current_user.id)
             .values(
-                record_score_ranked=current_score,
+                record_score_ranked=max(current_score, current_record),
                 current_score_ranked=0   # reset for next game
             )
         )
@@ -357,14 +354,11 @@ async def setRecordScore(
     elif queue == 450:
         current_score = current_user.current_score
         current_record = current_user.record_score
-        if current_score <= current_record:
-            return RecordOut(new_record=False, current_record=current_record)
-
         stmt = (
             update(User)
             .where(User.id == current_user.id)
             .values(
-                record_score=current_score,
+                record_score=max(current_score, current_record),
                 current_score=0   # reset for next game
             )
         )
@@ -375,7 +369,10 @@ async def setRecordScore(
     await db.execute(stmt)
     await db.commit()
 
-    return RecordOut(new_record=True, current_record=current_score)
+    if current_score <= current_record:
+        return RecordOut(new_record=False, current_record=current_record)
+    else:
+        return RecordOut(new_record=True, current_record=current_record)
 
 @app.get("/leaderboard", response_model=List[UserOut])
 async def get_leaderboard(
